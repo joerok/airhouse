@@ -65,27 +65,21 @@ def match(pattern, string):
     mem = {}
     q = []
     pmatch = False
-
+    seen = {}
     while sindex < len(string):
         character, operator, next_index = next_pattern(pattern, pindex)
-        if !operator and character in ('.', string[sindex]):
+        is_match = character in ('.', string[sindex])
+        requires_backtrack = bool(operator)
+
+        if is_match:
+            if requires_backtrack and (next_index, sindex, pmatch) not in seen:
+                q.append([next_index, sindex, pmatch])
+                seen.add((next_index, sindex, pmatch))
+            sindex += 1
+            pmatch = operator == '+'
+        elif (pmatch and requires_backtrack) or operator == '*':
+            pmatch = False
             pindex = next_index
-            sindex += 1
-            pmatch = False
-        elif operator == '+' and character in ('.', string[sindex]) and not pmatch:
-            pmatch = True
-            sindex += 1
-        elif operator == '+' and character in ('.', string[sindex]) and pmatch:
-            q.append([next_index, sindex, pmatch])
-            sindex += 1
-            pmatch = True
-        elif operator == '+' and pmatch:  # miss can go to default
-            pindex += 1
-            pmatch = False
-        elif operator == '*' and character in ('.', string[sindex]):
-            q.append([next_index, sindex, pmatch])
-            sindex += 1
-            pmatch = True
         elif q:
             pindex, sindex, pmatch = q.pop(-1)
         else:
