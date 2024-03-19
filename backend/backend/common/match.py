@@ -35,12 +35,12 @@ def match(pattern, string):
         requires_backtrack = bool(operator)
 
         if is_match:
-                if operator == '*' and (next_index, sindex, pmatch) not in seen and next_index is not None:
-                    q.append([next_index, sindex, pmatch])
-                    seen.add((next_index, sindex, pmatch))
-                elif operator == '+' and (next_index, sindex+1, pmatch) not in seen and next_index is not None:
-                    q.append([next_index, sindex+1, pmatch])
-                    seen.add((next_index, sindex+1, pmatch))
+            if operator == '*' and (next_index, sindex, pmatch) not in seen and next_index is not None:
+                q.append([next_index, sindex, pmatch])
+                seen.add((next_index, sindex, pmatch))
+            elif operator == '+' and (next_index, sindex+1, pmatch) not in seen and next_index is not None:
+                q.append([next_index, sindex+1, pmatch])
+                seen.add((next_index, sindex+1, pmatch))
             sindex += 1
             if sindex == len(string):
                 failed = False
