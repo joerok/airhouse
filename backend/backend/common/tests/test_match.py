@@ -62,6 +62,6 @@ class MatchTestCase(TestCase):
 
         for pattern, string, result, note in patterns:
             if result == False:
-                self.assertFalse(match(pattern, string), note)
+                self.assertFalse(match(pattern, string), f'/{pattern}/ !~ {string} : {note}')
             else:
-                self.assertTrue(match(pattern, string), note)
+                self.assertTrue(match(pattern, string), f'/{pattern}/ =~ {string} : {note}')
