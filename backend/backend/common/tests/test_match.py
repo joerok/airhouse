@@ -27,3 +27,9 @@ class MatchTestCase(TestCase):
 
     def test_match_plus_only_many(self):
         self.assertTrue(match(r'.+', 'abcd'))
+
+    def test_plus_bounded(self):
+        self.assertTrue(match(r'|.+|', '|aa|'))
+
+    def test_plus_specific_bounded(self):
+        self.assertTrue(match(r'|a+|', '|aa|'))

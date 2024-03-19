@@ -1,87 +1,104 @@
 
-def work(string, pattern, los, his, lop, hip, minstr, nextchar, mem):
-    key = f'{los}|{his}|{lop}|{hip}|{minstr}'
+def work(string, groups, sindex, gindex, mem):
+    key = (sindex, gindex)
+
     if key in mem:
         return mem[key]
 
-    if ((lop==hip and pattern[lop] == '*') or (hip-lop == his-los and pattern[lop:hip+1] == string[los:his+1] )):
+
+    if len(groups) == gindex and len(string) == sindex:
+        # end of the string and end of the pattern
         mem[key] = True
         return True
-
-    if his-los+1 < minstr or hip-lop+1 == 0:
+    elif sindex >= len(string):
+        # at the end of the string, are the remaining groups globs(*)?
+        mem[key] = sum(g['min'] for g in groups[gindex:]) == 0
+        return mem[key]
+    elif gindex >= len(groups):
+        mem[key] = False
+        return False
+    g = groups[gindex]
+    if g['min'] > 0 and g['pattern'] not in ('.', string[sindex]):
+        # current pattern is a non glob (single character or + pattern)
         mem[key] = False
         return False
 
-    while los <= his and lop <= hip and string[los] == pattern[lop]:
-        los += 1
-        lop += 1
-        minstr -= 1
+    window = 0
+    while window < g['max'] and sindex + window < len(string) and g['pattern'] in ('.', string[sindex+window]):
+        # find the maximum sized window
+        window += 1
 
-    while los <= his and lop <= hip and string[his] == pattern[hip]:
-        his -= 1
-        hip -= 1
-        minstr -= 1
-
-    if lop == hip and p[lop] == '*':
-        mem[key] = True
-        return True
-    
-    if lop > hip:
-        mem[key] = minstr == 0 and los > his
-        return mem[key]
-
-    if his-los+1 < minstr or hip-lop+1 == 0:
-        mem[key] = False
-        return False
- 
-    if p[lop:lop+1] == "*":
-        for i in range(his-los):
-            nc = nextchar[lop]
-            if nc == -1 or string[his-i] == pattern[nc]:
-                if work(string, pattern, his-i, his, lop+1, hip, minstr, nextchar,mem):
-                    mem[key] = True
-                    return True
-                
-        mem[key] = work(string, pattern, los, his, lop+1, hip, minstr, nextchar,mem)
-        return mem[key]
-
-    elif p[lop:lop+1] == "+":
-        for i in range(1, his-los):
-            nc = nextchar[lop]
-            if nc != -1 or s[his-i] == p[nc]:
-                if work(string, pattern, his-i, his, lop+1, hip, minstr, nextchar, mem):
-                    mem[key] = True
-                    return True
-        mem[key] = work(string, pattern, los, his, lop+1, hip, minstr, nextchar,mem)
-        return mem[key]
-
-    mem[key] = string == pattern
-    return mem[key]
-
-
-def match(pattern, string):
-    minstr = 0
-    np = ""
-    nextchar = [0] * len(pattern)
-    j = 0
-    for i, c in enumerate(pattern):
-        if c != '*':
-            minstr += 1
-        if i > 0 and pattern[i] == pattern[i-1] and pattern[i] == '*':
-            continue
-        np += pattern[i]
-    
-    pattern = np
-    for i, _ in enumerate(p):
-        if j < i and j != -1:
-            j = i
-        while j != -1 and j < len(pattern) and pattern[j] == '*':
-            j += 1
-        if j == len(pattern):
-            j = -1
-        nextchar[i] = j
-    return work(string, np, 0, len(string)-1, 0, len(pattern)-1, minstr, nextchar, {})
-
-
-def match(pattern, string):
+    for buf in range(window, g['min']-1, -1):
+        # start with the maximum sized window and attempt to apply the remaining patterns until we have a match
+        res = work(string, groups, sindex+buf, gindex+1, mem)
+        if res:
+            mem[key] = True
+            return True
+    # after trying all possible window sizes there are no remaining matches available
+    mem[key] = False
     return False
+
+def match(pattern, string):
+    """
+        * `.` - wildcard; any character
+        * `*` - 0 or more of the preceding character
+        * `+` - 1 or more of the preceding character
+        assumptions:    
+        * '*' and '+' cannot follow '*' or '+'
+        * a string cannot begin with '*' or '+'
+        * there are no escape characters ("\*" matching "*")
+
+    """
+    # groups are .+, C+, .*, C*
+    # groups with + have a minimum length of 1 with calculated maximal length
+    # groups with * have a minimum length of 0 with a calculated maximal length
+    # groups with neither have a minumum and maximum length of 1    
+    groups = []
+    i = 0
+    sum_min_lens = 0
+    while i < len(pattern):
+        # compress patterns into like consecutive groups:
+        #    a*a+a* -> a+
+        # keep a minimum length for each pattern group:
+        #    a* -> 0, a+ -> 1, a -> 1, aaaa -> 4, a+a+a+a* -> 3
+        current_character = pattern[i]
+        next_character = None
+        if i+1 < len(pattern):
+            next_character = pattern[i+1]
+
+        if groups and current_character == groups[-1]['pattern']:
+            new_group = groups[-1]
+        else:
+            new_group = {
+                'pattern': current_character,
+                'min': 0,
+                'max': len(string)
+            }
+            groups.append(new_group)
+
+        i += 1
+        if next_character in '*+':
+            # include glob or plus into the current group
+            i += 1
+        if next_character != '*':
+            # only globs can be 0 length
+            new_group['min'] += 1
+            sum_min_lens += 1
+    sindex = 0
+    gindex = 0
+    while sindex < len(string):
+        if gindex < len(groups) and groups[gindex]['pattern'] in ('.', string[sindex]):
+            gindex += 1
+            sindex += 1
+        
+    for group in reversed(groups):
+        # weak maximums for each group
+        group['max'] = len(string) - sum_min_lens + group['min']
+
+    gindex, sindex = 0, 0
+    mem = {}
+    while sindex < len(string):
+        for gindex in range(len(groups)):
+            if sindex > 0 
+
+    return work(string, groups, 0, 0, {})

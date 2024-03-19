@@ -14,6 +14,7 @@ COPY . .
 RUN python -m pip install -r requirements.txt
 
 FROM base AS airhouse-test
+COPY . .
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
 
