@@ -39,7 +39,7 @@ def match(pattern, string):
             'sindex': sindex,
             'pindex': pindex,
             'is_match': is_match,
-            'requires_backtrack': request_backtrack,
+            'requires_backtrack': requires_backtrack,
             'pmatch': pmatch,
             'queue': q})
         if is_match:
