@@ -104,7 +104,7 @@ def match(pattern, string):
             gmatch = False
         elif g['pattern'] in ('.', string[sindex]):
             if gmatch or g['min'] == 0:
-                q.push([gindex+1,sindex])
+                q.append([gindex+1,sindex])
             sindex += 1
             gmatch = True
         elif g['min'] == 0:
