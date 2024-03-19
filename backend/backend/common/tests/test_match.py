@@ -57,7 +57,7 @@ class DataDrivenMatchTestCase(TestCase):
         (r'a*', 'b', False, 'Wildcard matches only the coefficient'),
         (r'a+b', 'a', False, 'Plus bounded does not match unbounded string'),
         (r'a*b*c', 'ac', True, 'Multiple wildcards matches with bounded string'),
-        (r'a*a', 'a*a', True, 'Consecutive wildcard matches with the same character'),
+        (r'a*a', 'aa', True, 'Consecutive wildcard matches with the same character'),
         (r'a*b*c*', 'aabcc', True, 'Mutiple wildcards with repetitions'),
         (r'a*b+c', 'abbc', True, 'Mixing plus and wildcards'),
         (r'a.+c', 'a1c', True, 'Any character matching'),
