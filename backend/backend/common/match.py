@@ -1,4 +1,4 @@
-
+e
 def match(pattern, string):
     """
         * `.` - wildcard; any character
@@ -55,6 +55,19 @@ def match(pattern, string):
                 q.append([next_index, sindex, pmatch])
                 seen.add((next_index, sindex, pmatch))
             sindex += 1
+            if sindex == len(string):
+                failed = False
+                while pindex is not None and not failed:
+                    (_,op,pindex) = next_pattern(pattern, pindex)
+                    failed = pindex and op != '*'
+                if failed:
+                    if q:
+                        pindex, sindex, pmatch = q.pop(-1)
+                        continue
+                    else:
+                        log.append('failed on tail in loop')
+                        raise Exception(log)
+                        return False            
             if not operator:
                 pindex = next_index
             pmatch = operator == '+'
