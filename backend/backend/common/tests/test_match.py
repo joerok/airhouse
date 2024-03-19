@@ -33,3 +33,12 @@ class MatchTestCase(TestCase):
 
     def test_plus_specific_bounded(self):
         self.assertTrue(match(r'|a+|', '|aa|'))
+
+    def test_multiple_plus(self):
+        self.assertTrue(match(r'a+a+a+', 'aaa'))
+        self.assertFalse(match(r'a+a+a+', 'aa'))
+        self.assertTrue(match(r'a*a+a*a+a*', 'aaa'))
+        self.assertFalse(match(r'a*a+a*a+a*a+', 'aa'))
+
+    def test_assert_lots_of_backtracking(self):
+        self.assertTrue(match(r'a*b*a*b*a*b*a*b*a*b*ab', 'abaabbaaabbbaaaabbbbaaaaabbbbbab'))
