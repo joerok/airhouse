@@ -51,6 +51,8 @@ def match(pattern, string):
             if not operator:
                 pindex = next_index
             pmatch = operator == '+'
+            if next_index is None:
+                return True
             if sindex == len(string):
                 failed = False
                 while pindex is not None and not failed:
