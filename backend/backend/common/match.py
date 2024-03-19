@@ -50,6 +50,18 @@ def match(pattern, string):
             if not operator:
                 pindex = next_index
             pmatch = operator == '+'
+            if sindex == len(string):
+                failed = False
+                while pindex and not failed:
+                    (_,op,pindex) = next_pattern(pattern, pindex)
+                    failed = pindex and op != '*':
+                if failed:
+                    log.append('failed on tail')
+                    if q:
+                        pindex, sindex, pmatch = q.pop(-1)
+                        continue
+                    return False
+                return True
         elif (pmatch and requires_backtrack) or operator == '*':
             pmatch = False
             pindex = next_index
@@ -57,12 +69,6 @@ def match(pattern, string):
             pindex, sindex, pmatch = q.pop(-1)
         else:
             log.append('failed in loop')
-            raise Exception(log)
-            return False
-    while pindex:
-        (_,op,pindex) = next_pattern(pattern, pindex)
-        if pindex and op != '*':
-            log.append('failed on tail')
             raise Exception(log)
             return False
     raise Exception(log)
