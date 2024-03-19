@@ -1,43 +1,4 @@
 
-def work(string, groups, sindex, gindex, mem):
-    key = (sindex, gindex)
-
-    if key in mem:
-        return mem[key]
-
-
-    if len(groups) == gindex and len(string) == sindex:
-        # end of the string and end of the pattern
-        mem[key] = True
-        return True
-    elif sindex >= len(string):
-        # at the end of the string, are the remaining groups globs(*)?
-        mem[key] = sum(g['min'] for g in groups[gindex:]) == 0
-        return mem[key]
-    elif gindex >= len(groups):
-        mem[key] = False
-        return False
-    g = groups[gindex]
-    if g['min'] > 0 and g['pattern'] not in ('.', string[sindex]):
-        # current pattern is a non glob (single character or + pattern)
-        mem[key] = False
-        return False
-
-    window = 0
-    while window < g['max'] and sindex + window < len(string) and g['pattern'] in ('.', string[sindex+window]):
-        # find the maximum sized window
-        window += 1
-
-    for buf in range(window, g['min']-1, -1):
-        # start with the maximum sized window and attempt to apply the remaining patterns until we have a match
-        res = work(string, groups, sindex+buf, gindex+1, mem)
-        if res:
-            mem[key] = True
-            return True
-    # after trying all possible window sizes there are no remaining matches available
-    mem[key] = False
-    return False
-
 def match(pattern, string):
     """
         * `.` - wildcard; any character
@@ -76,6 +37,8 @@ def match(pattern, string):
                 q.append([next_index, sindex, pmatch])
                 seen.add((next_index, sindex, pmatch))
             sindex += 1
+            if not operator:
+                pindex = next_index
             pmatch = operator == '+'
         elif (pmatch and requires_backtrack) or operator == '*':
             pmatch = False
