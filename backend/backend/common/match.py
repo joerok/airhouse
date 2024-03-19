@@ -34,8 +34,6 @@ def match(pattern, string):
         is_match = character in ('.', string[sindex])
         requires_backtrack = bool(operator)
 
-        if next_index is None and (is_match or operator == '*') and sindex + 1 == len(string):
-            return True
         if is_match:
             if requires_backtrack and (next_index, sindex, pmatch) not in seen:
                 q.append([next_index, sindex, pmatch])
