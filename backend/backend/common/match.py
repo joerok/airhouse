@@ -35,15 +35,18 @@ def match(pattern, string):
         requires_backtrack = bool(operator)
 
         if is_match:
-            if requires_backtrack and (next_index, sindex, pmatch) not in seen and next_index is not None:
-                q.append([next_index, sindex, pmatch])
-                seen.add((next_index, sindex, pmatch))
+                if operator == '*' and (next_index, sindex, pmatch) not in seen and next_index is not None:
+                    q.append([next_index, sindex, pmatch])
+                    seen.add((next_index, sindex, pmatch))
+                elif operator == '+' and (next_index, sindex+1, pmatch) not in seen and next_index is not None:
+                    q.append([next_index, sindex+1, pmatch])
+                    seen.add((next_index, sindex+1, pmatch))
             sindex += 1
             if sindex == len(string):
                 failed = False
                 while pindex is not None and not failed:
                     (_,op,pindex) = next_pattern(pattern, pindex)
-                    failed = op in (None, '+')
+                    failed = pindex is not None and op in (None, '+')
                 if failed:
                     if q:
                         pindex, sindex, pmatch = q.pop(-1)
@@ -62,6 +65,6 @@ def match(pattern, string):
             return False
     while pindex is not None:
         (s,op,pindex) = next_pattern(pattern, pindex)
-        if op != '*':
+        if pindex is not None and op != '*':
             return False
     return True
