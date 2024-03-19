@@ -27,11 +27,21 @@ def match(pattern, string):
     q = []
     pmatch = False
     seen = set()
+    log = [(pattern, string)]
     while sindex < len(string):
         character, operator, next_index = next_pattern(pattern, pindex)
         is_match = character in ('.', string[sindex])
         requires_backtrack = bool(operator)
-
+        log.append({
+            'character': character, 
+            'operator': operator, 
+            'next_index': next_index,
+            'sindex': sindex,
+            'pindex': pindex,
+            'is_match': is_match,
+            'requires_backtrack': request_backtrack,
+            'pmatch': pmatch,
+            'queue': q})
         if is_match:
             if requires_backtrack and (next_index, sindex, pmatch) not in seen:
                 q.append([next_index, sindex, pmatch])
@@ -46,9 +56,14 @@ def match(pattern, string):
         elif q:
             pindex, sindex, pmatch = q.pop(-1)
         else:
+            log.append('failed in loop')
+            raise Exception(log)
             return False
     while pindex:
         (_,op,pindex) = next_pattern(pattern, pindex)
         if pindex and op != '*':
+            log.append('failed on tail')
+            raise Exception(log)
             return False
+    raise Exception(log)
     return True
