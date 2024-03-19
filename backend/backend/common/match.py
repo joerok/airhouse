@@ -30,6 +30,10 @@ def match(pattern, string):
     log = [(pattern, string)]
     
     while sindex < len(string):
+        if pindex is None:
+            log.append(["Failed on pindex == None"])
+            raise Exception(log)
+            return False
         character, operator, next_index = next_pattern(pattern, pindex)
         is_match = character in ('.', string[sindex])
         requires_backtrack = bool(operator)
