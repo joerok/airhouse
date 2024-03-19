@@ -77,10 +77,10 @@ def match(pattern, string):
             groups.append(new_group)
 
         i += 1
-        if next_character in '*+':
+        if next_character and next_character in '*+':
             # include glob or plus into the current group
             i += 1
-        if next_character != '*':
+        if next_character and  next_character != '*':
             # only globs can be 0 length
             new_group['min'] += 1
             sum_min_lens += 1
