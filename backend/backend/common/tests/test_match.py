@@ -44,7 +44,7 @@ class MatchTestCase(TestCase):
     def test_assert_lots_of_backtracking(self):
         self.assertTrue(match(r'a*b*a*b*a*b*a*b*a*b*ab', 'abaabbaaabbbaaaabbbbaaaaabbbbbab'))
 
-    @ddt.ddt(
+    @ddt.ddt((
         (r'a*b', 'ab', True, 'basic matching'),
         (r'a.c', 'abc', True, '. bounded by characters'),
         (r'a+b', 'aab', True, '1+ matching bounded at the end'),
@@ -58,7 +58,7 @@ class MatchTestCase(TestCase):
         (r'a*b*c*', 'aabcc', True, 'Mutiple wildcards with repetitions'),
         (r'a*b+c', 'abbc', True, 'Mixing plus and wildcards'),
         (r'a.+c', 'a1c', True, 'Any character matching'),
-        (r'a*b*c', 'abca', False, 'Wildcards do not leave their bounds')
+        (r'a*b*c', 'abca', False, 'Wildcards do not leave their bounds')),
     )
     def test_basic_patterns(self, case):
         pattern, string, result, note = case
