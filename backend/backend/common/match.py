@@ -30,7 +30,7 @@ def match(pattern, string):
     seen = set()
     
     while sindex < len(string):
-        if pindex is None and log:
+        if pindex is None and q:
             pindex, sindex, pmatch = q.pop(-1)
         character, operator, next_index = next_pattern(pattern, pindex)
         is_match = character in ('.', string[sindex])
