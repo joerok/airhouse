@@ -59,7 +59,7 @@ def match(pattern, string):
                 failed = False
                 while pindex is not None and not failed:
                     (_,op,pindex) = next_pattern(pattern, pindex)
-                    failed = pindex and op != '*'
+                    failed = pindex is not None and op != '*'
                 if failed:
                     if q:
                         pindex, sindex, pmatch = q.pop(-1)
@@ -84,7 +84,7 @@ def match(pattern, string):
     while pindex is not None and not failed:
         (s,op,pindex) = next_pattern(pattern, pindex)
         log.append(["tail", s, op, pindex])
-        failed = pindex and op != '*'
+        failed = pindex is not None and op != '*'
     if failed:
         log.append('failed on tail')
         raise Exception(log)
