@@ -86,14 +86,11 @@ def match(pattern, string):
             sum_min_lens += 1
     sindex = 0
     gindex = 0
-    while sindex < len(string):
-        if gindex < len(groups) and groups[gindex]['pattern'] in ('.', string[sindex]):
-            gindex += 1
-            sindex += 1
         
     for group in reversed(groups):
         # weak maximums for each group
-        group['max'] = len(string) - sum_min_lens + group['min']
+        if group['max'] != 1:
+            group['max'] = len(string) - sum_min_lens + group['min']
 
     gindex, sindex = 0, 0
     mem = {}
