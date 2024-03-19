@@ -1,4 +1,4 @@
-e
+
 def match(pattern, string):
     """
         * `.` - wildcard; any character
