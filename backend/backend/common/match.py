@@ -78,6 +78,7 @@ def match(pattern, string):
             failed = pindex and op != '*'
         if failed:
             log.append('failed on tail')
+            raise Exception(log)
             return False
     raise Exception(log)
     return True
