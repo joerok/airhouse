@@ -43,6 +43,8 @@ def match(pattern, string):
             'requires_backtrack': requires_backtrack,
             'pmatch': pmatch,
             'queue': q})
+        if next_index is None and (is_match or operator == '*'):
+            return True
         if is_match:
             if requires_backtrack and (next_index, sindex, pmatch) not in seen:
                 q.append([next_index, sindex, pmatch])
@@ -51,8 +53,6 @@ def match(pattern, string):
             if not operator:
                 pindex = next_index
             pmatch = operator == '+'
-            if next_index is None:
-                return True
             if sindex == len(string):
                 failed = False
                 while pindex is not None and not failed:
