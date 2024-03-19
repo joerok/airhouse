@@ -61,7 +61,7 @@ class MatchTestCase(TestCase):
         (r'a*b*c', 'abca', False, 'Wildcards do not leave their bounds')
     )
     def test_basic_patterns(self, case):
-         pattern, string, result, note = case
+        pattern, string, result, note = case
         if result == False:
             self.assertFalse(match(pattern, string), f'/{pattern}/ !~ {string} : {note}')
         else:
