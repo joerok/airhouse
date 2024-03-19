@@ -21,6 +21,7 @@ def match(pattern, string):
         if i >= len(pattern): return None, None, None
         if i + 1 == len(pattern): return (pattern[i], None, None)
         if pattern[i+1] not in '+*': return (pattern[i], None, i+1)
+        if i + 2 == len(pattern): return (pattern[i], pattern[i+1], None)
         return pattern[i], pattern[i+1], i+2
     pindex, sindex = 0, 0
     mem = {}
