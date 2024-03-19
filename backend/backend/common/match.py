@@ -27,7 +27,7 @@ def match(pattern, string):
     q = []
     pmatch = False
     seen = set()
-    log = [(pattern, string)]
+    log = [(pattern, string)] 
     while sindex < len(string):
         character, operator, next_index = next_pattern(pattern, pindex)
         is_match = character in ('.', string[sindex])
@@ -70,6 +70,13 @@ def match(pattern, string):
         else:
             log.append('failed in loop')
             raise Exception(log)
+            return False
+        failed = False
+        while pindex is not None and not failed:
+            (_,op,pindex) = next_pattern(pattern, pindex)
+            failed = pindex and op != '*'
+        if failed:
+            log.append('failed on tail')
             return False
     raise Exception(log)
     return True
