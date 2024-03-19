@@ -56,70 +56,42 @@ def match(pattern, string):
     groups = []
     i = 0
     sum_min_lens = 0
-    while i < len(pattern):
-        # compress patterns into like consecutive groups:
-        #    a*a+a* -> a+
-        # keep a minimum length for each pattern group:
-        #    a* -> 0, a+ -> 1, a -> 1, aaaa -> 4, a+a+a+a* -> 3
-        current_character = pattern[i]
-        next_character = None
-        if i+1 < len(pattern):
-            next_character = pattern[i+1]
-
-        if groups and current_character == groups[-1]['pattern']:
-            new_group = groups[-1]
-        else:
-            new_group = {
-                'pattern': current_character,
-                'min': 0,
-                'max': len(string)
-            }
-            groups.append(new_group)
-
-        i += 1
-        if not next_character or next_character not in '*+':
-            new_group['min'] = new_group['max'] = 1
-        elif next_character:
-            if next_character in '*+':
-                # include glob or plus into the current group
-                i += 1
-            if next_character != '*':
-                # only globs can be 0 length
-                new_group['min'] += 1
-                sum_min_lens += 1
-    sindex = 0
-    gindex = 0
-        
-    for group in reversed(groups):
-        # weak maximums for each group
-        if group['max'] != 1:
-            group['max'] = len(string) - sum_min_lens + group['min']
-
-    gindex, sindex = 0, 0
+    def next_pattern(pattern, i):
+        if i >= len(pattern): return None, None, None
+        if i + 1 == len(pattern): return (pattern[i], None, i+1)
+        if pattern[i+1] not in '+*': return (pattern[i], None, i+1)
+        return pattern[i], pattern[i+1], i+2
+    pindex, sindex = 0, 0
     mem = {}
     q = []
-    gmatch = False
-    raise Exception(groups)
+    pmatch = False
+
     while sindex < len(string):
-        g = groups[gindex]
-        if g['min'] == g['max'] == 1 and g['pattern'] in ('.', string[sindex]):
-            gindex += 1
+        character, operator, next_index = next_pattern(pattern, pindex)
+        if !operator and character in ('.', string[sindex]):
+            pindex = next_index
             sindex += 1
-            gmatch = False
-        elif g['pattern'] in ('.', string[sindex]):
-            if gmatch or g['min'] == 0:
-                q.append([gindex+1,sindex])
+            pmatch = False
+        elif operator == '+' and character in ('.', string[sindex]) and not pmatch:
+            pmatch = True
             sindex += 1
-            gmatch = True
-        elif g['min'] == 0:
-            gindex += 1
-            gmatch = False
-        elif gmatch:
-            gindex+=1
-            gmatch = False
+        elif operator == '+' and character in ('.', string[sindex]) and pmatch:
+            q.append([next_index, sindex, pmatch])
+            sindex += 1
+            pmatch = True
+        elif operator == '+' and pmatch:  # miss can go to default
+            pindex += 1
+            pmatch = False
+        elif operator == '*' and character in ('.', string[sindex]):
+            q.append([next_index, sindex, pmatch])
+            sindex += 1
+            pmatch = True
         elif q:
-            gindex, sindex = q.pop(-1)
+            pindex, sindex, pmatch = q.pop(-1)
         else:
             return False
-    
-    return all(g['min'] == 0 for g in groups[gindex:])
+    while pindex:
+        (_,op,pindex) = next_pattern(pattern, pindex)
+        if pindex and op != '*':
+            return False
+    return True
