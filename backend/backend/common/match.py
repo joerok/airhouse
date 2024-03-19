@@ -97,6 +97,8 @@ def match(pattern, string):
 
     gindex, sindex = 0, 0
     mem = {}
+    q = []
+    gmatch = False
     while sindex < len(string):
         g = groups[gindex]
         if g['min'] == g['max'] == 1 and g['pattern'] in ('.', string[sindex]):
@@ -104,6 +106,8 @@ def match(pattern, string):
             sindex += 1
             gmatch = False
         elif g['pattern'] in ('.', string[sindex]):
+            if gmatch or g['min'] == 0:
+                q.push([gindex+1,sindex])
             sindex += 1
             gmatch = True
         elif g['min'] == 0:
@@ -112,6 +116,8 @@ def match(pattern, string):
         elif gmatch:
             gindex+=1
             gmatch = False
+        elif q:
+            gindex, sindex = q.pop(-1)
         else:
             return False
     
