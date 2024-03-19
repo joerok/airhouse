@@ -65,7 +65,7 @@ def match(pattern, string):
     mem = {}
     q = []
     pmatch = False
-    seen = {}
+    seen = set()
     while sindex < len(string):
         character, operator, next_index = next_pattern(pattern, pindex)
         is_match = character in ('.', string[sindex])
