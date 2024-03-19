@@ -44,7 +44,7 @@ class MatchTestCase(TestCase):
     def test_assert_lots_of_backtracking(self):
         self.assertTrue(match(r'a*b*a*b*a*b*a*b*a*b*ab', 'abaabbaaabbbaaaabbbbaaaaabbbbbab'))
 
-    @ddt.ddt((
+    @ddt.data((
         (r'a*b', 'ab', True, 'basic matching'),
         (r'a.c', 'abc', True, '. bounded by characters'),
         (r'a+b', 'aab', True, '1+ matching bounded at the end'),
