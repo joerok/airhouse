@@ -30,14 +30,12 @@ def match(pattern, string):
     seen = set()
     
     while sindex < len(string):
-        if pindex is None and q:
-            pindex, sindex, pmatch = q.pop(-1)
         character, operator, next_index = next_pattern(pattern, pindex)
         is_match = character in ('.', string[sindex])
         requires_backtrack = bool(operator)
 
         if is_match:
-            if requires_backtrack and (next_index, sindex, pmatch) not in seen:
+            if requires_backtrack and (next_index, sindex, pmatch) not in seen and next_index is not None:
                 q.append([next_index, sindex, pmatch])
                 seen.add((next_index, sindex, pmatch))
             sindex += 1
