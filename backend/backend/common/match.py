@@ -28,26 +28,12 @@ def match(pattern, string):
     q = []
     pmatch = False
     seen = set()
-    log = [(pattern, string)]
     
     while sindex < len(string):
-        if pindex is None:
-            log.append(["Failed on pindex == None"])
-            raise Exception(log)
-            return False
         character, operator, next_index = next_pattern(pattern, pindex)
         is_match = character in ('.', string[sindex])
         requires_backtrack = bool(operator)
-        log.append({
-            'character': character, 
-            'operator': operator, 
-            'next_index': next_index,
-            'sindex': sindex,
-            'pindex': pindex,
-            'is_match': is_match,
-            'requires_backtrack': requires_backtrack,
-            'pmatch': pmatch,
-            'queue': q})
+
         if next_index is None and (is_match or operator == '*') and sindex + 1 == len(string):
             return True
         if is_match:
@@ -65,8 +51,6 @@ def match(pattern, string):
                         pindex, sindex, pmatch = q.pop(-1)
                         continue
                     else:
-                        log.append('failed on tail in loop')
-                        raise Exception(log)
                         return False            
             if not operator:
                 pindex = next_index
@@ -77,18 +61,9 @@ def match(pattern, string):
         elif q:
             pindex, sindex, pmatch = q.pop(-1)
         else:
-            log.append('failed in loop')
-            raise Exception(log)
             return False
-    failed = False
-    while pindex is not None and not failed:
-        (s,op,nindex) = next_pattern(pattern, pindex)
-        log.append(["tail", s, op, pindex])
-        failed = op in (None, '+')
-        pindex = nindex
-    if failed:
-        log.append('failed on tail')
-        raise Exception(log)
-        return False
-    raise Exception(log)
+    while pindex is not None:
+        (s,op,pindex) = next_pattern(pattern, pindex)
+        if op != '*':
+            return False
     return True
