@@ -19,7 +19,7 @@ def match(pattern, string):
     sum_min_lens = 0
     def next_pattern(pattern, i):
         if i >= len(pattern): return None, None, None
-        if i + 1 == len(pattern): return (pattern[i], None, i+1)
+        if i + 1 == len(pattern): return (pattern[i], None, None)
         if pattern[i+1] not in '+*': return (pattern[i], None, i+1)
         return pattern[i], pattern[i+1], i+2
     pindex, sindex = 0, 0
