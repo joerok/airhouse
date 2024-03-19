@@ -96,6 +96,7 @@ def match(pattern, string):
     mem = {}
     q = []
     gmatch = False
+    raise Exception(groups)
     while sindex < len(string):
         g = groups[gindex]
         if g['min'] == g['max'] == 1 and g['pattern'] in ('.', string[sindex]):
