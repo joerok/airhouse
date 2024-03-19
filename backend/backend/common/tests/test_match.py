@@ -45,9 +45,9 @@ class MatchTestCase(TestCase):
 
     def test_basic_patterns(self):
         patterns = (
-            (r'a*b', 'ab', True, "basic matching"),
-            (r'a.c', 'abc', True, ". bounded by characters'),
-            (r'a+b', 'aab', True, "1+ matching bounded at the end"),
+            (r'a*b', 'ab', True, 'basic matching'),
+            (r'a.c', 'abc', True, '. bounded by characters'),
+            (r'a+b', 'aab', True, '1+ matching bounded at the end'),
             (r'', '', True, 'Empty string and empty pattern'),
             (r'a*', 'aaaaaaaa', 'Wildcard matches many'),
             (r'a*b', '', False, 'Empty string with bounded wildcard'),
