@@ -54,7 +54,7 @@ def match(pattern, string):
                 failed = False
                 while pindex and not failed:
                     (_,op,pindex) = next_pattern(pattern, pindex)
-                    failed = pindex and op != '*':
+                    failed = pindex and op != '*'
                 if failed:
                     log.append('failed on tail')
                     if q:
