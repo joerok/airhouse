@@ -98,7 +98,7 @@ def match(pattern, string):
     gindex, sindex = 0, 0
     mem = {}
     while sindex < len(string):
-        g = groups[gindex[
+        g = groups[gindex]
         if g['min'] == g['max'] == 1 and g['pattern'] in ('.', string[sindex]):
             gindex += 1
             sindex += 1
