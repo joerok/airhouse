@@ -70,6 +70,6 @@ def match(pattern, string):
             return False
     while pindex is not None:
         (s,op,pindex) = next_pattern(pattern, pindex)
-        if pindex is not None and op != '*':
+        if op != '*':
             return False
     return True
