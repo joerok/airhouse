@@ -98,7 +98,21 @@ def match(pattern, string):
     gindex, sindex = 0, 0
     mem = {}
     while sindex < len(string):
-        for gindex in range(len(groups)):
-            if sindex > 0 
-
-    return work(string, groups, 0, 0, {})
+        g = groups[gindex[
+        if g['min'] == g['max'] == 1 and g['pattern'] in ('.', string[sindex]):
+            gindex += 1
+            sindex += 1
+            gmatch = False
+        elif g['pattern'] in ('.', string[sindex]):
+            sindex += 1
+            gmatch = True
+        elif g['min'] == 0:
+            gindex += 1
+            gmatch = False
+        elif gmatch:
+            gindex+=1
+            gmatch = False
+        else:
+            return False
+    
+    return all(g['min'] == 0 for g in groups[gindex:])
