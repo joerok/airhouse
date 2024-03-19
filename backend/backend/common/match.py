@@ -46,6 +46,8 @@ def match(pattern, string):
                 seen.add((next_index, sindex+1, pmatch))
             sindex += 1
             if sindex == len(string):
+                if next_index is None:
+                    return True
                 failed = False
                 while pindex is not None and not failed:
                     (_,op,pindex) = next_pattern(pattern, pindex)
