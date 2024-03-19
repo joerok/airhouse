@@ -1,5 +1,7 @@
 
 def match(pattern, string):
+    if len(pattern) == len(string) == 0:
+        return True
     """
         * `.` - wildcard; any character
         * `*` - 0 or more of the preceding character
