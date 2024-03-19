@@ -29,7 +29,10 @@ def match(pattern, string):
     pmatch = False
     seen = set()
     
-    while sindex < len(string):
+    while sindex < len(string) or q:
+        if sindex >= len(string):
+            pindex, sindex, pmatch = q.pop(-1)
+            continue
         character, operator, next_index = next_pattern(pattern, pindex)
         is_match = character in ('.', string[sindex])
         requires_backtrack = bool(operator)
