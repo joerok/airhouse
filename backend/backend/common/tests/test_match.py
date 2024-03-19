@@ -49,7 +49,7 @@ class MatchTestCase(TestCase):
             (r'a.c', 'abc', True, '. bounded by characters'),
             (r'a+b', 'aab', True, '1+ matching bounded at the end'),
             (r'', '', True, 'Empty string and empty pattern'),
-            (r'a*', 'aaaaaaaa', 'Wildcard matches many'),
+            (r'a*', 'aaaaaaaa', True, 'Wildcard matches many'),
             (r'a*b', '', False, 'Empty string with bounded wildcard'),
             (r'a*', 'b', False, 'Wildcard matches only the coefficient'),
             (r'a+b', 'a', False, 'Plus bounded does not match unbounded string'),
@@ -58,7 +58,8 @@ class MatchTestCase(TestCase):
             (r'a*b*c*', 'aabcc', True, 'Mutiple wildcards with repetitions'),
             (r'a*b+c', 'abbc', True, 'Mixing plus and wildcards'),
             (r'a.+c', 'a1c', True, 'Any character matching'),
-            (r'a*b*c', 'abca', False, 'Wildcards do not leave their bounds'))
+            (r'a*b*c', 'abca', False, 'Wildcards do not leave their bounds')
+        )
 
         for pattern, string, result, note in patterns:
             if result == False:
