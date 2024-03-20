@@ -16,7 +16,7 @@ services:
       context: .
       target: airhouse-test
     container_name: airhouse-test
-    entrypoint: ./backend/manage.py test -v 3 -d backend.common.tests
+    entrypoint: ./backend/manage.py test -v 3 -d backend.common.tests backend.order.tests
     volumes:
       - .:/app/
   migrate:
