@@ -7,6 +7,6 @@ class OrderViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_order_create_fake_order(self):
-        response = self.client.get('/api/orders/?fakeorder')
+        response = self.client.get('/api/orders/?fake_order')
         raise Exception(response.data)
         self.assertEqual(response.status_code, 200)
