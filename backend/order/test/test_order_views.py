@@ -19,7 +19,7 @@ class OrderViewSetTestCase(APITestCase):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         self.assertEqual(serializer.data['amount'], '€6000.12')
-        self.assertEqual(serializer.data['price'], 6000)
+        self.assertEqual(serializer.data['price'], 6000.12)
         self.assertEqual(serializer.data['currency'], 'EUR')
 
     def test_order_item_update_price_and_currency_changes_amount(self):
