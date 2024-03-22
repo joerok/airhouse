@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED
 from django.db.models.signals import post_save
 
-from order.models import Order
-from order.serializers import OrderSerializer
+from order.models import Order, OrderItem
+from order.serializers import OrderSerializer, OrderItemSerializer
 from shipment.models import ShipmentItem
 
 def update_order_status_from_shipment_items(sender, instance, created, **kwargs):
