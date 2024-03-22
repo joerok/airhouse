@@ -31,8 +31,28 @@ class OrderViewSetTestCase(APITestCase):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         self.assertEqual(serializer.data['amount'], '€7000.98')
-        self.assertEqual(serializer.data['price'], '7000.12')
+        self.assertEqual(serializer.data['price'], '7000.98')
         self.assertEqual(serializer.data['currency'], 'EUR')
+
+    def test_order_item_update_amount_bad_currency(self):
+        fake_order = OrderFactory()
+        serializer = OrderItemSerializer(
+            instance=fake_order.order_items.first(), 
+            data={'amount':'M7000.98'},
+            partial=True)
+
+        with self.assertRaises(ValidationError):
+            serializer.is_valid(raise_exception=True)
+
+    def test_order_item_update_amount_bad_amount(self):
+        fake_order = OrderFactory()
+        serializer = OrderItemSerializer(
+            instance=fake_order.order_items.first(), 
+            data={'amount':'MNOMONEY'},
+            partial=True)
+
+        with self.assertRaises(ValidationError):
+            serializer.is_valid(raise_exception=True)
 
     def test_order_bad_number(self):
         fake_order = OrderFactory()
