@@ -17,9 +17,9 @@ class OrderViewSetTestCase(APITestCase):
         fake_order = OrderFactory()
         serializer = OrderItemSerializer(instance=fake_order.order_items.first(), data={'amount':'€6000.00'}, partial=True)
         serializer.is_valid(raise_exception=True)
-        self.assertEqual(serializer.amount, '€7000')
-        self.assertEqual(serializer.price, 7000)
-        self.assertEqual(serializer.currency, 'EUR')
+        self.assertEqual(serializer.data['amount'], '€7000')
+        self.assertEqual(serializer.data['price'], 7000)
+        self.assertEqual(serializer.data['currency'], 'EUR')
 
     def test_order_item_update_price_and_currency_changes_amount(self):
         response = self.client.get('/api/orders/?fake_order')
