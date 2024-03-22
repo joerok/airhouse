@@ -88,7 +88,7 @@ class OrderSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
     order_items = OrderItemSerializer(many=True)
     shipments = ShipmentSerializer(many=True, read_only=True)
-    total_order_price = serializers.DecimalFielld(required=False, read_only=True, max_digits=10, decimal_places=2)
+    total_order_price = serializers.DecimalField(required=False, read_only=True, max_digits=10, decimal_places=2)
     quantity_ordered = serializers.IntegerField(required=False, read_only=True)
     number_of_shipments = serializers.IntegerField(required=False, read_only=True)
     shipped_items_count = serializers.IntegerField(required=False, read_only=True)
