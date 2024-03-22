@@ -90,6 +90,3 @@ class OrderItem(models.Model):
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=16, default=CURRENCY_USD)
-
-    class Meta:
-        read_only_fields = ['uuid']
