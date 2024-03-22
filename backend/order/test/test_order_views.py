@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from rest_framework.exceptions import ValidationError
-from order.test.factory import OrderFactory
+from order.test.factory import OrderFactory, ShipmentFactory
 from order.serializers import OrderSerializer, OrderItemSerializer
 
 
@@ -16,12 +16,24 @@ class OrderViewSetTestCase(APITestCase):
     def test_order_total_price(self):
         fake_order = OrderFactory()
         serializer = OrderSerializer(instance=fake_order)
-        self.assertTrue(serializer.data['total_price'] > 0)
+        self.assertTrue(serializer.data['total_order_price'] > 0)
 
     def test_order_quantity_ordered(self):
         fake_order = OrderFactory()
         serializer = OrderSerializer(instance=fake_order)
         self.assertTrue(serializer.data['quantity_ordered'] > 0)
+
+    def test_total_shipments(self):
+        fake_order = OrderFactory()
+        fake_shipment = ShipmentFactory(order=order)
+        serializer = OrderSerializer(instance=fake_order)
+        self.assertTrue(serializer.data['number_of_shipments'] > 0)
+
+    def test_items_shipped(self):
+        fake_order = OrderFactory()
+        fake_shipment = ShipmentFactory(order=order)
+        serializer = OrderSerializer(instance=fake_order)
+        self.assertTrue(serializer.data['shipped_items_count'] > 0)
 
     def test_order_item_update_amount_changes_price_and_currency(self):
         fake_order = OrderFactory()
