@@ -22,7 +22,7 @@ class CurrencyAmountField(serializers.Field):
         return f"{OrderItem.CURRENCY_SYMBOLS[value.currency]}{value.price}"
     
     @classmethod
-    def to_internal_value(data):
+    def to_internal_value(cls, data):
         valid_symbols = list(OrderItem.SYMBOL_CURRENCIES.keys())
         
         if not isinstance(data, str):
