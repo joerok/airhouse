@@ -3,12 +3,15 @@ from rest_framework import serializers
 
 from order.models import Address, Order, OrderItem
 from shipment.serializers import ShipmentSerializer
+from backend.common.match import match
 
 default_errors = {
     'invalid_string': "Incorrect type: Expected a string but got {input_type}",
     'empty_field': "Got an empty value",
     'invalid_currency': "string did not start with a valid currency: {valid_currencies}",
     'invalid_price': "price data did not convert to a float: {data}",
+    'invalid_order_number': 'Order number must begin with `ORD#` followed by at least four characters: {value}'
+    'invalid_phone_number': 'Order number must be in the format (xxx) xxx-xxxx: {value}'
 }
 
 @dataclass
@@ -51,6 +54,12 @@ class AddressSerializer(serializers.Serializer):
     postal_code = serializers.CharField(max_length=255)
     phone_number = serializers.CharField(max_length=255, required=False)
 
+    def validate_phone_number(self, value):
+        """     * phone number should follow the convention `(xxx) xxx-xxxx` (just focus on structure, we can't support digits yet) """
+        if not match("(...) ...-....", value):
+            raise self.fail("invalid_phone_number", value=value)
+        return value
+
     class Meta:
         model = Address
         fields = '__all__'
@@ -80,6 +89,12 @@ class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)
     shipments = ShipmentSerializer(many=True, read_only=True)
 
+    def validate_order_number(self, value):
+        """    * order numbers should all begin with `ORD#` followed by at least four characters"""
+        if not match("ORD#....+", value):
+            raise self.fail("invalid_order_number", value=value)
+        return value
+        
     class Meta:
         model = Order
         fields = '__all__'

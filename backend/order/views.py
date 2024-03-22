@@ -52,6 +52,14 @@ class OrderViewSet(viewsets.ModelViewSet):
             return self.create_fake_shipment()
         return super().retrieve(request, *args, **kwargs)
 
+    def update(self, request, pk=None):
+        order = self.get_object()
+        serializer = self.serializer_class(order, data=request.data, partial=False)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+
 class OrderItemViewSet(viewsets.ModelViewSet):
     serializer_class = OrderItemSerializer
     queryset = OrderItem.objects.all()

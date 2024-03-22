@@ -51,3 +51,11 @@ class OrderViewSetTestCase(APITestCase):
         self.assertEqual(order_item['amount'], '€7000')
         self.assertEqual(order_item['price'], 7000.00)
         self.assertEqual(order_item['currency'], 'EUR')
+
+    def test_order_bad_number(self):
+        from order.test.factory import OrderFactory
+        fake_order = OrderFactory()
+        fake_order['order_number'] = "ORD#123"
+        import exception
+        with self.assertRaises(exception.ValueError):
+            self.get_serializer(instance=fake_order)
