@@ -28,15 +28,18 @@ class CurrencyAmountField(serializers.Field):
             self.fail('incorrect_type', input_type=type(data).__name__)
         if not data:
             self.fail('empty_field')
-        if not data[0] in valid_symbols:
-            self.fail('invalid_currency', valid_currencies=valid_symbols)
         currency = data[0]
+        if not currency in valid_symbols:
+            self.fail('invalid_currency', valid_currencies=valid_symbols)
         try:
             price = float(data[1:])
         except ValueError:
             self.fail('invalid_price', data=data[1:])
 
-        return Currency(currency=currency, price=price)
+        return {
+            'currency': currency,
+            'price': price
+        }
 
 class AddressSerializer(serializers.Serializer):
     address_line_1 = serializers.CharField(max_length=255)
@@ -54,12 +57,14 @@ class AddressSerializer(serializers.Serializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     uuid = serializers.UUIDField(read_only=True)
     sku = serializers.CharField(max_length=255)
-    amount = CurrencyAmountField(source='*')
+    amount = CurrencyAmountField(source='amount')
+    currency = serializers.CharField(max_length=255)
+    price = serializers.IntegerField(max_length=255)
     quantity = serializers.IntegerField()
-
+        
     class Meta:
         model = OrderItem
-        fields = ('amount', 'sku', 'uuid', 'quantity')
+        fields = ('amount', 'sku', 'uuid', 'quantity', 'price', 'currency')
 
 
 class OrderSerializer(serializers.ModelSerializer):

@@ -51,3 +51,18 @@ class OrderViewSet(viewsets.ModelViewSet):
         if 'fake_shipment' in request.query_params:
             return self.create_fake_shipment()
         return super().retrieve(request, *args, **kwargs)
+
+class OrderItemViewSet(viewsets.ModelViewSet):
+    serializer_class = OrderItemSerializer
+    queryset = OrderItem.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        if 'fake_order' in request.query_params:
+            return self.create_fake_order()
+
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        if 'fake_shipment' in request.query_params:
+            return self.create_fake_shipment()
+        return super().retrieve(request, *args, **kwargs)
