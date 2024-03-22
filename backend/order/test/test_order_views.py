@@ -16,14 +16,12 @@ class OrderViewSetTestCase(APITestCase):
     def test_order_total_price(self):
         fake_order = OrderFactory()
         serializer = OrderSerializer(instance=fake_order)
-        self.assertTrue(serializer.total_price > 0)
+        self.assertTrue(serializer.data['total_price'] > 0)
 
     def test_order_quantity_ordered(self):
         fake_order = OrderFactory()
         serializer = OrderSerializer(instance=fake_order)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        self.assertTrue(serializer.quantity_ordered > 0)
+        self.assertTrue(serializer.data['quantity_ordered'] > 0)
 
     def test_order_item_update_amount_changes_price_and_currency(self):
         fake_order = OrderFactory()
