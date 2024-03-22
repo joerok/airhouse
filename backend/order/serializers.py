@@ -36,7 +36,7 @@ class CurrencyAmountField(serializers.Field):
             price = float(data[1:])
         except ValueError:
             self.fail('invalid_price', data=data[1:])
-        raise Exception("I was here", currency, price, data)
+
         return {
             'currency': currency,
             'price': price
