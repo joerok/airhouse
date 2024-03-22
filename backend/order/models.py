@@ -36,17 +36,17 @@ class Order(models.Model):
     @property
     def total_order_price(self):
         """ * total order price (sum of item price) """
-        return sum(i.price for i in self.order_items)
+        return sum(i.price for i in self.order_items.all())
 
     @property
     def quantity_ordered(self):
         """ * total number of items ordered (sum of item quantity) """
-        return sum(i.quantity for i in self.order_items)
+        return sum(i.quantity for i in self.order_items.all())
 
     @property
     def number_of_shipments(self):
         """ * total number of shipments (count of shipments) """
-        return len(self.order_shipments)
+        return len(self.order_shipments.all())
 
     __shipped_item_counts = None
     def update_shipped_item_counts(self):
