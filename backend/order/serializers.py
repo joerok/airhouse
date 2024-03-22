@@ -28,17 +28,17 @@ class CurrencyAmountField(serializers.Field):
         valid_symbols = list(OrderItem.SYMBOL_CURRENCIES.keys())
         
         if not isinstance(data, str):
-            self.fail('incorrect_type', input_type=type(data).__name__)
+            cls.fail('incorrect_type', input_type=type(data).__name__)
         if not data:
-            self.fail('empty_field')
+            cls.fail('empty_field')
         symbol = data[0]
         if not symbol in valid_symbols:
-            self.fail('invalid_currency_symbol', valid_currencies=valid_symbols)
+            cls.fail('invalid_currency_symbol', valid_currencies=valid_symbols)
         currency = OrderItem.SYMBOL_CURRENCIES[symbol]
         try:
             price = float(data[1:])
         except ValueError:
-            self.fail('invalid_price', data=data[1:])
+            cls.fail('invalid_price', data=data[1:])
 
         return {
             'currency': currency,
