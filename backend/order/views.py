@@ -58,7 +58,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         order_item = self.get_object()
-        serializer = self.serializer_class(order_item, data=request.data, partial=True)
+        serializer = self.serializer_class(order_item, data=request.data, partial=False)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
