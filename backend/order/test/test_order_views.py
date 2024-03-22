@@ -26,13 +26,13 @@ class OrderViewSetTestCase(APITestCase):
 
     def test_total_shipments(self):
         fake_order = OrderFactory()
-        fake_shipment = ShipmentFactory(order=order)
+        fake_shipment = ShipmentFactory(order=fake_order)
         serializer = OrderSerializer(instance=fake_order)
         self.assertTrue(serializer.data['number_of_shipments'] > 0)
 
     def test_items_shipped(self):
         fake_order = OrderFactory()
-        fake_shipment = ShipmentFactory(order=order)
+        fake_shipment = ShipmentFactory(order=fake_order)
         serializer = OrderSerializer(instance=fake_order)
         self.assertTrue(serializer.data['shipped_items_count'] > 0)
 
