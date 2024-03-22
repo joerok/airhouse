@@ -5,14 +5,6 @@ from order.models import Address, Order, OrderItem
 from shipment.serializers import ShipmentSerializer
 from backend.common.match import match
 
-default_errors = {
-    'invalid_string': "Incorrect type: Expected a string but got {input_type}",
-    'empty_field': "Got an empty value",
-    'invalid_currency': "string did not start with a valid currency: {valid_currencies}",
-    'invalid_price': "price data did not convert to a float: {data}",
-    'invalid_order_number': 'Order number must begin with `ORD#` followed by at least four characters: {value}',
-    'invalid_phone_number': 'Order number must be in the format (xxx) xxx-xxxx: {value}',
-}
 
 @dataclass
 class Currency:
@@ -21,6 +13,13 @@ class Currency:
 
 
 class CurrencyAmountField(serializers.Field):
+    default_error_messages = {
+        'invalid_string': "Incorrect type: Expected a string but got {input_type}",
+        'empty_field': "Got an empty value",
+        'invalid_currency': "string did not start with a valid currency: {valid_currencies}",
+        'invalid_price': "price data did not convert to a float: {data}",
+    }
+
     def to_representation(self, value):
         return f"{OrderItem.CURRENCY_SYMBOLS[value.currency]}{value.price}"
     
@@ -47,6 +46,10 @@ class CurrencyAmountField(serializers.Field):
         }
 
 class AddressSerializer(serializers.Serializer):
+    default_error_messages = {
+        'invalid_phone_number': 'Order number must be in the format (xxx) xxx-xxxx: {value}',
+    }
+
     address_line_1 = serializers.CharField(max_length=255)
     address_line_2 = serializers.CharField(max_length=255, required=False)
     city = serializers.CharField(max_length=255)
@@ -85,6 +88,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    default_error_messages = {
+        'invalid_order_number': 'Order number must begin with `ORD#` followed by at least four characters: {value}',
+    }
+
     address = AddressSerializer()
     order_items = OrderItemSerializer(many=True)
     shipments = ShipmentSerializer(many=True, read_only=True)
