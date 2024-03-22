@@ -21,7 +21,8 @@ class CurrencyAmountField(serializers.Field):
     def to_representation(self, value):
         return f"{OrderItem.CURRENCY_SYMBOLS[value.currency]}{value.price}"
     
-    def to_internal_value(self, data):
+    @classmethod
+    def to_internal_value(data):
         valid_symbols = list(OrderItem.SYMBOL_CURRENCIES.keys())
         
         if not isinstance(data, str):
@@ -64,7 +65,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         if 'amount' in data:
-            data.update(self.amount.to_internal_value(data['amount']))
+            data.update(CurrencyAmountField.to_internal_value(data['amount']))
         return super().to_internal_value(data)
             
 
