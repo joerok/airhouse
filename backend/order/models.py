@@ -57,8 +57,8 @@ class Order(models.Model):
                 total_items_ordered=models.Sum('quantity'),
                 total_items_shipped=models.Sum('items_shipped')
             )
-            items_with_shipments = annotation.get('total_items_shipped', 0)
-            items_without_shipments = annotation.get('total_items_ordered', 0) - items_with_shipments
+            items_with_shipments = (annotation.get('total_items_shipped') or 0)
+            items_without_shipments = (annotation.get('total_items_ordered') or 0) - items_with_shipments
 
             self.__shipped_item_counts = dict(
                 shipped=items_with_shipments,
