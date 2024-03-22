@@ -64,7 +64,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         if 'amount' in data:
-            data.update(self.currency.to_internal_value(data['amount']))
+            data.update(self.amount.to_internal_value(data['amount']))
         return super().to_internal_value(data)
             
 
