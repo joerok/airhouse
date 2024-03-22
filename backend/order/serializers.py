@@ -23,22 +23,21 @@ class CurrencyAmountField(serializers.Field):
     def to_representation(self, value):
         return f"{OrderItem.CURRENCY_SYMBOLS[value.currency]}{value.price}"
     
-    @classmethod
-    def to_internal_value(cls, data):
+    def to_internal_value(self, data):
         valid_symbols = list(OrderItem.SYMBOL_CURRENCIES.keys())
         
         if not isinstance(data, str):
-            cls.fail('incorrect_type', input_type=type(data).__name__)
+            self.fail('incorrect_type', input_type=type(data).__name__)
         if not data:
-            cls.fail('empty_field')
+            self.fail('empty_field')
         symbol = data[0]
         if not symbol in valid_symbols:
-            cls.fail('invalid_currency_symbol', valid_currencies=valid_symbols)
+            self.fail('invalid_currency_symbol', valid_currencies=valid_symbols)
         currency = OrderItem.SYMBOL_CURRENCIES[symbol]
         try:
             price = float(data[1:])
         except ValueError:
-            cls.fail('invalid_price', data=data[1:])
+            self.fail('invalid_price', data=data[1:])
 
         return {
             'currency': currency,
@@ -75,12 +74,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
     currency = serializers.CharField(max_length=255, required=False)
     price = serializers.DecimalField(required=False, max_digits=10, decimal_places=2)
     quantity = serializers.IntegerField()
-
-    def to_internal_value(self, data):
-        if 'amount' in data:
-            data.update(CurrencyAmountField.to_internal_value(data['amount']))
-        return super().to_internal_value(data)
-            
 
     class Meta:
         model = OrderItem
