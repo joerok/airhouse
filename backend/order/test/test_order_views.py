@@ -27,9 +27,9 @@ class OrderViewSetTestCase(APITestCase):
         self.assertTrue(response.status_code, 201)
         response = self.client.put(f'/api/order_items/{order_item_id}/', order_item, format='json')
         order_item = response.json()
-        self.assertEqual(order_item['amount'], '€6000.00')
-        self.assertEqual(order_item['price'], 6000.00)
-        self.assertEqual(order_item['currency'], '€')
+        self.assertEqual(order_item['amount'], '€6000')
+        self.assertEqual(order_item['price'], 6000)
+        self.assertEqual(order_item['currency'], 'EUR')
 
 
     def test_order_item_update_price_and_currency_changes_amount(self):
@@ -40,7 +40,7 @@ class OrderViewSetTestCase(APITestCase):
         order_item_id = data['order_items'][0]['uuid']
         order_item = data['order_items'][0]
         order_item.update(
-            currency='€',
+            currency='EUR',
             price='7000'
         )
         del order_item['amount']
@@ -48,6 +48,6 @@ class OrderViewSetTestCase(APITestCase):
         self.assertTrue(response.status_code, 201)
         response = self.client.put(f'/api/order_items/{order_item_id}/', order_item, format='json')
         order_item = response.json()
-        self.assertEqual(order_item['amount'], '€7000.00')
+        self.assertEqual(order_item['amount'], '€7000')
         self.assertEqual(order_item['price'], 7000.00)
-        self.assertEqual(order_item['currency'], '€')
+        self.assertEqual(order_item['currency'], 'EUR')
