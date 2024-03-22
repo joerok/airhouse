@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 from rest_framework.exceptions import ValidationError
-from order.test.factory import OrderFactory, ShipmentFactory
+from order.test.factory import OrderFactory
+from shipment.test.factory import ShipmentFactory
 from order.serializers import OrderSerializer, OrderItemSerializer
 
 
