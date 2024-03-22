@@ -73,7 +73,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     sku = serializers.CharField(max_length=255)
     amount = CurrencyAmountField(source='*', required=False)
     currency = serializers.CharField(max_length=255, required=False)
-    price = serializers.IntegerField(required=False)
+    price = serializers.DecimalField(required=False)
     quantity = serializers.IntegerField()
 
     def to_internal_value(self, data):
