@@ -23,9 +23,10 @@ class OrderViewSetTestCase(APITestCase):
         order_item_id = data['order_items'][0]['uuid']
         order_item = data['order_items'][0]
         order_item.update(
-            price=5000,
-            currency='EUR'
+            amount='€6000.00'
         )
+        del order_item['price']
+        del order_item['currency']
         response = self.client.put(f'/api/order_items/{order_item_id}/', order_item, format='json')
         response = self.client.get(f'/api/orders/{order_id}/', context_type="application/json")
         raise Exception(response.json())
