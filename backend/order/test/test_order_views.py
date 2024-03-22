@@ -13,8 +13,11 @@ class OrderViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_order_item_patch(self):
-        from contextlib import capture_output
-        with capture_output() as (stdout, stderr):
+        from contextlib import redirect_stderr
+        import io
+
+        output = io.StringIO()
+        with redirect_stderr(output) as out:
             try:
                 response = self.client.get('/api/orders/?fake_order')
                 order_id = response.json()['uuid']
@@ -34,4 +37,4 @@ class OrderViewSetTestCase(APITestCase):
                 raise Exception(response.json())
                 self.assertEqual(items[0]['amount'], '$100.00')
             except:
-                raise self.assertFalse(True, stderr.getvalue())
+                raise self.assertFalse(True, out.getvalue())
