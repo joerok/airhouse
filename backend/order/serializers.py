@@ -14,7 +14,7 @@ class Currency:
 
 class CurrencyAmountField(serializers.Field):
     default_error_messages = {
-        'invalid_string': "Incorrect type: Expected a string but got {input_type}",
+        'incorrect_type': "Incorrect type: Expected a string but got {input_type}",
         'empty_field': "Got an empty value",
         'invalid_currency_symbol': "string did not start with a valid currency: {valid_currencies}",
         'invalid_price': "price data did not convert to a float: {data}",
