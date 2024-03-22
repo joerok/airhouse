@@ -16,7 +16,7 @@ class OrderViewSetTestCase(APITestCase):
     def test_order_item_update_amount_changes_price_and_currency(self):
         fake_order = OrderFactory()
         with self.assertRaises(ValidationError):
-            serializer = OrderItemSerializer(instance=fake_order.order_items[0], data={'amount':'€6000.00'}, partial=True)
+            serializer = OrderItemSerializer(instance=fake_order.order_items.first(), data={'amount':'€6000.00'}, partial=True)
             serializer.is_valid(raise_exception=True)
 
 
