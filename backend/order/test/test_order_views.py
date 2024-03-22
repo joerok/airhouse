@@ -9,13 +9,13 @@ class OrderViewSetTestCase(APITestCase):
 
     def test_order_create_fake_order(self):
         response = self.client.get('/api/orders/?fake_order')
-        data = response.json()
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
 
     def test_order_item_update_amount_changes_price_and_currency(self):
         response = self.client.get('/api/orders/?fake_order')
         order_id = response.json()['uuid']
         response = self.client.get(f'/api/orders/{order_id}/', context_type="application/json")
+        data = response.json()
         order_item_id = data['order_items'][0]['uuid']
         order_item = data['order_items'][0]
         order_item.update(
@@ -36,6 +36,7 @@ class OrderViewSetTestCase(APITestCase):
         response = self.client.get('/api/orders/?fake_order')
         order_id = response.json()['uuid']
         response = self.client.get(f'/api/orders/{order_id}/', context_type="application/json")
+        data = response.json()
         order_item_id = data['order_items'][0]['uuid']
         order_item = data['order_items'][0]
         order_item.update(
