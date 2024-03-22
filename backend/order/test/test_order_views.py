@@ -26,7 +26,7 @@ class OrderViewSetTestCase(APITestCase):
             price=5000,
             currency='EUR'
         )
-        response = self.client.put(f'/api/order_items/{order_item_id}/', order_item, format='json', content_type='application/json')
+        response = self.client.put(f'/api/order_items/{order_item_id}/', order_item, format='json')
         raise Exception(response)
         response = self.client.get(f'/api/orders/{order_id}/', context_type="application/json")
         raise Exception(response.json())
