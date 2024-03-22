@@ -27,7 +27,6 @@ class OrderViewSetTestCase(APITestCase):
             currency='EUR'
         )
         response = self.client.put(f'/api/order_items/{order_item_id}/', order_item, format='json')
-        raise Exception(response)
         response = self.client.get(f'/api/orders/{order_id}/', context_type="application/json")
         raise Exception(response.json())
         self.assertEqual(items[0]['amount'], '$100.00')
