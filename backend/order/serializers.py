@@ -57,7 +57,7 @@ class AddressSerializer(serializers.Serializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     uuid = serializers.UUIDField(read_only=True)
     sku = serializers.CharField(max_length=255)
-    amount = CurrencyAmountField(source='*')
+    amount = CurrencyAmountField(source='*', read_only=True)
     currency = serializers.CharField(max_length=255)
     price = serializers.IntegerField()
     quantity = serializers.IntegerField()
