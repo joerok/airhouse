@@ -33,8 +33,22 @@ class Order(models.Model):
     status = models.CharField(max_length=255, choices=STATUS_CHOICES, default=STATUS_OPEN)
     ordered_at = models.DateTimeField()
 
-    __shipped_item_counts = None
+    @property
+    def total_order_price(self):
+        """ * total order price (sum of item price) """
+        return sum(i.price for i in self.order_items)
 
+    @property
+    def quantity_ordered(self):
+        """ * total number of items ordered (sum of item quantity) """
+        return sum(i.quantity for i in self.order_items)
+
+    @property
+    def number_of_shipments(self):
+        """ * total number of shipments (count of shipments) """
+        return len(self.order_shipments)
+
+    __shipped_item_counts = None
     def update_shipped_item_counts(self):
         if not self.__shipped_item_counts:
             annotation = self.order_items.annotate(
@@ -61,6 +75,7 @@ class Order(models.Model):
 
     @property
     def shipped_items_count(self):
+        """ * total number of items shipped (sum of item quantity in shipments """
         self.update_shipped_item_counts()
         return self.__shipped_item_counts['shipped']
 
