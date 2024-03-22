@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 
-from order.views import OrderViewSet
+from order.views import OrderViewSet, OrderItemViewSet
 
 
 router = DefaultRouter()
