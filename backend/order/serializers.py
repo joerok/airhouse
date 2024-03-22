@@ -10,8 +10,8 @@ default_errors = {
     'empty_field': "Got an empty value",
     'invalid_currency': "string did not start with a valid currency: {valid_currencies}",
     'invalid_price': "price data did not convert to a float: {data}",
-    'invalid_order_number': 'Order number must begin with `ORD#` followed by at least four characters: {value}'
-    'invalid_phone_number': 'Order number must be in the format (xxx) xxx-xxxx: {value}'
+    'invalid_order_number': 'Order number must begin with `ORD#` followed by at least four characters: {value}',
+    'invalid_phone_number': 'Order number must be in the format (xxx) xxx-xxxx: {value}',
 }
 
 @dataclass
