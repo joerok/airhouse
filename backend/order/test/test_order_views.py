@@ -13,7 +13,9 @@ class OrderViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_order_item_patch(self):
-        response = self.client.get('/api/orders/')
+        response = self.client.get('/api/orders/?fake_order')
+        order_id = response.json()['uuid']
+        response = self.client.get(f'/api/orders/{order_id}')
         data = response.json()
         raise Exception(data)
         order_item_id = data['order_items'][0]['uuid']
