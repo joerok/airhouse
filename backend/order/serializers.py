@@ -57,12 +57,17 @@ class AddressSerializer(serializers.Serializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     uuid = serializers.UUIDField(read_only=True)
     sku = serializers.CharField(max_length=255)
-    amount = CurrencyAmountField(source='*', read_only=True)
+    amount = CurrencyAmountField(source='*')
     currency = serializers.CharField(max_length=255)
     price = serializers.IntegerField()
     quantity = serializers.IntegerField()
 
-        
+    def to_internal_value(self, data):
+        if 'amount' in data:
+            data.update(self.currency.to_internal_value(data['amount']))
+        return super().to_internal_value(data)
+            
+
     class Meta:
         model = OrderItem
         fields = ('amount', 'sku', 'uuid', 'quantity', 'price', 'currency')
