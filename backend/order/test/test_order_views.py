@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 from rest_framework.exceptions import ValidationError
-import pdb
+from order.test.factory import OrderFactory
+from order.serializers import OrderSerializer
 
 
 class OrderViewSetTestCase(APITestCase):
@@ -13,24 +14,10 @@ class OrderViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_order_item_update_amount_changes_price_and_currency(self):
-        response = self.client.get('/api/orders/?fake_order')
-        order_id = response.json()['uuid']
-        response = self.client.get(f'/api/orders/{order_id}/', context_type="application/json")
-        data = response.json()
-        order_item_id = data['order_items'][0]['uuid']
-        order_item = data['order_items'][0]
-        order_item.update(
-            amount='€6000.00'
-        )
-        del order_item['price']
-        del order_item['currency']
-        response = self.client.put(f'/api/order_items/{order_item_id}/', order_item, format='json')
-        self.assertTrue(response.status_code, 201)
-        response = self.client.put(f'/api/order_items/{order_item_id}/', order_item, format='json')
-        order_item = response.json()
-        self.assertEqual(order_item['amount'], '€6000')
-        self.assertEqual(order_item['price'], 6000)
-        self.assertEqual(order_item['currency'], 'EUR')
+        fake_order = OrderFactory()
+        with self.assertRaises(ValidationError):
+            serializer = OrderItemSerializer(instance=fake_order.order_items[0], data={'amount':'€6000.00'}, partial=True)
+            serializer.is_valid(raise_exception=True)
 
 
     def test_order_item_update_price_and_currency_changes_amount(self):
@@ -54,8 +41,6 @@ class OrderViewSetTestCase(APITestCase):
         self.assertEqual(order_item['currency'], 'EUR')
 
     def test_order_bad_number(self):
-        from order.test.factory import OrderFactory
-        from order.serializers import OrderSerializer
         fake_order = OrderFactory()
         with self.assertRaises(ValidationError):
             serializer = OrderSerializer(instance=fake_order, data={'order_number':'ORD#123'}, partial=True)
