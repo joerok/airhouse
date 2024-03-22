@@ -61,6 +61,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     currency = serializers.CharField(max_length=255)
     price = serializers.IntegerField()
     quantity = serializers.IntegerField()
+    
         
     class Meta:
         model = OrderItem
