@@ -44,6 +44,26 @@ class OrderViewSetTestCase(APITestCase):
         with self.assertRaises(ValidationError):
             serializer.is_valid(raise_exception=True)
 
+    def test_order_item_update_amount_bad_type(self):
+        fake_order = OrderFactory()
+        serializer = OrderItemSerializer(
+            instance=fake_order.order_items.first(), 
+            data={'amount': 1},
+            partial=True)
+
+        with self.assertRaises(ValidationError):
+            serializer.is_valid(raise_exception=True)
+
+    def test_order_item_update_amount_empty_data(self):
+        fake_order = OrderFactory()
+        serializer = OrderItemSerializer(
+            instance=fake_order.order_items.first(), 
+            data={'amount': ""},
+            partial=True)
+
+        with self.assertRaises(ValidationError):
+            serializer.is_valid(raise_exception=True)
+
     def test_order_item_update_amount_bad_amount(self):
         fake_order = OrderFactory()
         serializer = OrderItemSerializer(
