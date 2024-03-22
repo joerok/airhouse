@@ -59,9 +59,9 @@ class AddressSerializer(serializers.Serializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     uuid = serializers.UUIDField(read_only=True)
     sku = serializers.CharField(max_length=255)
-    amount = CurrencyAmountField(source='*')
-    currency = serializers.CharField(max_length=255)
-    price = serializers.IntegerField()
+    amount = CurrencyAmountField(source='*', required=False)
+    currency = serializers.CharField(max_length=255, required=False)
+    price = serializers.IntegerField(required=False)
     quantity = serializers.IntegerField()
 
     def to_internal_value(self, data):
