@@ -46,7 +46,7 @@ class Order(models.Model):
     @property
     def number_of_shipments(self):
         """ * total number of shipments (count of shipments) """
-        return len(self.order_shipments.all())
+        return len(self.shipments.all())
 
     __shipped_item_counts = None
     def update_shipped_item_counts(self):
