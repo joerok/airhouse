@@ -57,5 +57,6 @@ class OrderViewSetTestCase(APITestCase):
         from order.serializers import OrderSerializer
         fake_order = OrderFactory(order_number='ORD#123')
         with self.assertRaises(ValueError):
-            OrderSerializer(instance=fake_order).is_valid(raise_exception=True)
+            OrderSerializer(data=fake_order.data).is_valid(raise_exception=True)
+            
 
