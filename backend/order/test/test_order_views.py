@@ -20,8 +20,8 @@ class OrderViewSetTestCase(APITestCase):
             data = response.json()
         except:
             raise Exception(response)
-        raise Exception(data)
         order_item_id = data['order_items'][0]['uuid']
         raise Exception(self.client.patch(f'/api/order_items/{order_item_id}/', {"price": 5000, 'currency': 'EUR'}, content_type='application/json'))
-        raise Exception(data)
+        response = self.client.get(f'/api/orders/{order_id}/', context_type="application/json")
+        raise Exception(response.json())
         self.assertEqual(items[0]['amount'], '$100.00')
