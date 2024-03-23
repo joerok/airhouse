@@ -4,7 +4,7 @@ class Pattern:
         if self.op not in '+*': 
             self.op = None
 
-def match_with_backtrack(pattern, string):
+def match(pattern, string):
     pindex, sindex = 0, 0
     bt = []  # a q that contains at most one entry per pindex
     can_match_zero = True
