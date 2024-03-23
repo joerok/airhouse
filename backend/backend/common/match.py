@@ -31,7 +31,7 @@ def match(pattern, string):
             bt.append((pindex, sindex + 1))
             pindex, sindex = pindex + 2, sindex + 1
 
-        if matched:
+        if not matched:
             if not len(bt):
                 return False
             pindex, sindex = bt.pop(-1)
