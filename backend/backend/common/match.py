@@ -11,7 +11,6 @@ def match(pattern, string):
     while pindex < len(pattern) or sindex < len(string):
         clause = Pattern(pattern[pindex:pindex+2])
         matched = sindex < len(string) and clause.char in ('.', string[sindex])
-        pop_q = not matched
 
         if pindex != len(pattern) and sindex == len(string):
             # end of the string, but more patterns, are they all *?
@@ -26,17 +25,17 @@ def match(pattern, string):
             # non-greedy, try to not match * at first, save matched state for later
             bt.append((pindex, sindex))
             pindex += 2
-            pop_q = False
+            matched = True
         elif matched:
             # op = +/*: match 1, and move on to the next clause and char
             bt.append((pindex, sindex + 1))
             pindex, sindex = pindex + 2, sindex + 1
 
-        if pop_q:
+        if matched:
             if not len(bt):
                 return False
             pindex, sindex = bt.pop(-1)
 
         # coming from the q, the pattern has already attempted to match 0
-        can_match_zero = not pop_q 
+        can_match_zero = matched 
     return True
