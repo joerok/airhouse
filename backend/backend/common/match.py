@@ -1,77 +1,42 @@
+class Pattern:
+    def __init__(self, pattern):
+        self.char, self.op = pattern[0:1], pattern[1:2]
+        if self.op not in '+*': 
+            self.op = None
 
-def match(pattern, string):
-    if len(pattern) == len(string) == 0:
-        return True
-    """
-        * `.` - wildcard; any character
-        * `*` - 0 or more of the preceding character
-        * `+` - 1 or more of the preceding character
-        assumptions:    
-        * '*' and '+' cannot follow '*' or '+'
-        * a string cannot begin with '*' or '+'
-        * there are no escape characters ("\*" matching "*")
-
-    """
-    # groups are .+, C+, .*, C*
-    # groups with + have a minimum length of 1 with calculated maximal length
-    # groups with * have a minimum length of 0 with a calculated maximal length
-    # groups with neither have a minumum and maximum length of 1    
-    groups = []
-    i = 0
-    sum_min_lens = 0
-    def next_pattern(pattern, i):
-        if i is None or i >= len(pattern): return None, None, None
-        if i + 1 == len(pattern): return (pattern[i], None, None)
-        if pattern[i+1] not in '+*': return (pattern[i], None, i+1)
-        if i + 2 == len(pattern): return (pattern[i], pattern[i+1], None)
-        return pattern[i], pattern[i+1], i+2
+def match_with_backtrack(pattern, string):
     pindex, sindex = 0, 0
-    mem = {}
-    q = []
-    pmatch = False
-    seen = set()
-    
-    while sindex < len(string) or q:
-        if sindex >= len(string):
-            pindex, sindex, pmatch = q.pop(-1)
-            continue
-        character, operator, next_index = next_pattern(pattern, pindex)
-        is_match = character in ('.', string[sindex])
-        requires_backtrack = bool(operator)
+    bt = []  # a q that contains at most one entry per pindex
+    can_match_zero = True
+    while pindex < len(pattern) or sindex < len(string):
+        clause = Pattern(pattern[pindex:pindex+2])
+        matched = sindex < len(string) and clause.char in ('.', string[sindex])
+        pop_q = not matched
 
-        if is_match:
-            if operator == '*' and (next_index, sindex, pmatch) not in seen and next_index is not None:
-                q.append([next_index, sindex, pmatch])
-                seen.add((next_index, sindex, pmatch))
-            elif operator == '+' and (next_index, sindex+1, pmatch) not in seen and next_index is not None:
-                q.append([next_index, sindex+1, pmatch])
-                seen.add((next_index, sindex+1, pmatch))
-            sindex += 1
-            if sindex == len(string):
-                if next_index is None:
-                    return True
-                failed = False
-                while pindex is not None and not failed:
-                    (_,op,pindex) = next_pattern(pattern, pindex)
-                    failed = pindex is not None and op in (None, '+')
-                if failed:
-                    if q:
-                        pindex, sindex, pmatch = q.pop(-1)
-                        continue
-                    else:
-                        return False            
-            if not operator:
-                pindex = next_index
-            pmatch = operator == '+'
-        elif (pmatch and requires_backtrack) or operator == '*':
-            pmatch = False
-            pindex = next_index
-        elif q:
-            pindex, sindex, pmatch = q.pop(-1)
-        else:
-            return False
-    while pindex is not None:
-        (s,op,pindex) = next_pattern(pattern, pindex)
-        if op != '*':
-            return False
+        if pindex != len(pattern) and sindex == len(string):
+            # end of the string, but more patterns, are they all *?
+            while Pattern(pattern[pindex:pindex+2]).op == '*':
+                pindex += 2
+            if pindex == len(pattern):
+                return True
+        elif clause.op is None and matched:
+            # single char match
+            pindex, sindex = pindex + 1, sindex + 1
+        elif clause.op == '*' and can_match_zero:
+            # non-greedy, try to not match * at first, save matched state for later
+            bt.append((pindex, sindex))
+            pindex += 2
+            pop_q = False
+        elif matched:
+            # op = +/*: match 1, and move on to the next clause and char
+            bt.append((pindex, sindex + 1))
+            pindex, sindex = pindex + 2, sindex + 1
+
+        if pop_q:
+            if not len(bt):
+                return False
+            pindex, sindex = bt.pop(-1)
+
+        # coming from the q, the pattern has already attempted to match 0
+        can_match_zero = not pop_q 
     return True
