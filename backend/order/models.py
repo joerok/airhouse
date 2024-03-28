@@ -37,7 +37,7 @@ class Order(models.Model):
     def total_order_price(self):
         """ * total order price (sum of item price) """
         try:
-            self.with_total_price().total_price
+            self.get_queryset().with_total_price().total_price
         except e:
             raise Exception(e)
 
