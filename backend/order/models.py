@@ -41,7 +41,7 @@ class Order(models.Model):
     @property
     def quantity_ordered(self):
         """ * total number of items ordered (sum of item quantity) """
-        return sum(i.quantity for i in self.order_items.all())
+        return self.total_order_price()
 
     @property
     def number_of_shipments(self):
