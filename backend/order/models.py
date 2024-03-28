@@ -37,7 +37,7 @@ class Order(models.Model):
     def total_order_price(self):
         """ * total order price (sum of item price) """
         try:
-            self.get_queryset().with_total_price().total_price
+            self.order_items.with_total_price().total_price
         except e:
             raise Exception(e)
 
@@ -101,6 +101,9 @@ class OrderItem(models.Model):
         CURRENCY_EUR: '€',
     }
     SYMBOL_CURRENCIES = dict((s,c) for c,s in CURRENCY_SYMBOLS.items())
+
+    objects = OrderItemQuerySet.as_manager()
+
 
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
