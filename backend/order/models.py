@@ -36,7 +36,10 @@ class Order(models.Model):
     @property
     def total_order_price(self):
         """ * total order price (sum of item price) """
-        return self.with_total_price().total_price
+        try:
+            self.with_total_price().total_price
+        except e:
+            raise Exception(e)
 
     @property
     def quantity_ordered(self):
