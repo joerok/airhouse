@@ -36,7 +36,7 @@ class Order(models.Model):
     @property
     def total_order_price(self):
         """ * total order price (sum of item price) """
-        return self.total_order_price()
+        return self.with_total_price().total_price
 
     @property
     def quantity_ordered(self):
