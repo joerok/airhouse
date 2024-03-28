@@ -27,4 +27,4 @@ class OrderItemQueryManager(models.Manager):
 
 class OrderItemQuerySet(models.QuerySet):
     def with_total_price(self):
-        return self.annotate(total_price=model.Sum('price' * 'quantity'))
+        return self.annotate(total_price=self.model.Sum('price' * 'quantity'))
