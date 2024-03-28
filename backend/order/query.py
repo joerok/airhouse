@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, F
 
 
 class OrderQueryManager(models.Manager):
@@ -17,7 +17,7 @@ class OrderQueryManager(models.Manager):
 
 class OrderQuerySet(models.QuerySet):
     def with_total_price(self):
-        return self.annotate(total_price=models.Sum('items__price' * 'items__orderitem__quantity'))
+        return self.annotate(total_price=models.Sum(F('items__price') * F('items__orderitem__quantity')))
 
 
 class OrderItemQueryManager(models.Manager):
@@ -27,4 +27,4 @@ class OrderItemQueryManager(models.Manager):
 
 class OrderItemQuerySet(models.QuerySet):
     def with_total_price(self):
-        return self.annotate(total_price=models.Sum('price' * 'quantity'))
+        return self.annotate(total_price=models.Sum(F('price') * F('quantity')))
