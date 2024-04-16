@@ -37,8 +37,8 @@ class Order(models.Model):
     def total_order_price(self):
         """ * total order price (sum of item price) """
         try:
-            self.order_items.with_total_price().total_price
-        except e:
+            self.order_items.with_total_price().first().total_price
+        except:
             raise Exception(e)
 
     @property

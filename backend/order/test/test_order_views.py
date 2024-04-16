@@ -102,6 +102,3 @@ class OrderViewSetTestCase(APITestCase):
         with self.assertRaises(ValidationError):
             serializer = OrderSerializer(instance=fake_order, data={'order_number':'ORD#123'}, partial=True)
             serializer.is_valid(raise_exception=True)
-
-
-
