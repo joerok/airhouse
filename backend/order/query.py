@@ -19,3 +19,7 @@ class OrderQuerySet(models.QuerySet):
     def with_total_price(self):
         return self.annotate(total_price=models.Sum(models.F('items__price') * models.F('items__orderitem__quantity')))
 
+
+class OrderItemQuerySet(models.QuerySet):
+    def with_total_price(self):
+        return self.annotate(total_price=models.Sum(models.F('price') * models.F('quantity')))
