@@ -6,15 +6,23 @@ from order.serializers import OrderSerializer, OrderItemSerializer
 
 
 class OrderViewSetTestCase(APITestCase):
-    def test_order_view_set_list(self):
+    def setUp(self):
         from django.conf import settings
         from django.db import connection, reset_queries
         settings.DEBUG = True
         reset_queries()
+
+    def tearDown(self):
+        from django.conf import settings
+        from django.db import connection, reset_queries
+        raise Exception(connection.queries)
+
+        settings.DEBUG = False    
+
+
+    def test_order_view_set_list(self):
         response = self.client.get('/api/orders/')
         self.assertEqual(response.status_code, 200)
-        raise Exception(connection.queries)
-        settings.DEBUG = False    
 
     def test_order_create_fake_order(self):
         response = self.client.get('/api/orders/?fake_order')
