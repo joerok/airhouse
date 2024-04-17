@@ -15,7 +15,7 @@ class OrderViewSetTestCase(APITestCase):
     def tearDown(self):
         from django.conf import settings
         from django.db import connection, reset_queries
-        raise Exception(list(map(lambda x: x[:50], connection.queries)))
+        raise Exception(list(map(lambda x: str(x)[:50], connection.queries['sql'])))
 
         settings.DEBUG = False    
 
