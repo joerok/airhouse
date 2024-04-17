@@ -119,4 +119,6 @@ class OrderViewSetTestCase(APITestCase):
 
     def test_expensive_order(self):
         fake_order = OrderFactory()
-        #Order.objects.expensive(fake_order)
+        from backend.order.models import Order
+        self.assertEqual(len(Order.objects.expensive(fake_order.total_order_price).all()), 0)
+         
