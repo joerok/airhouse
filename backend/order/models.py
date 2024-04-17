@@ -40,7 +40,7 @@ class Order(models.Model):
     def get_totals(self):
         if self._cached_totals is None:
             # Calculate totals if not cached
-            item_totals = Order.objects.get_totals(pk=self.uuid)
+            item_totals = Order.objects.get_totals(order=self)
             self._cached_totals = {
                 'total_price': item_totals['item_price'],
                 'total_quantity': item_totals['total_quantity'],

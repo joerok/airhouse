@@ -4,11 +4,11 @@ class OrderQueryManager(models.Manager):
     def get_queryset(self):
         return OrderQuerySet(model=self.model, using=self._db, hints=self._hints)
     
-    def get_totals(self, pk=None):
-        return self.get_queryset().get_totals(pk=pk)
+    def get_totals(self, order=order):
+        return self.get_queryset().get_totals(order=order)
 
     def expensive(self, min_price=100):
-        return self.get_totals().filter(total_price__gt=min_price)
+        return self.filter(total_price__gt=min_price)
 
     def split_ship(self):
         return self.filter(shipments__gt=1)
@@ -18,9 +18,9 @@ class OrderQueryManager(models.Manager):
 
 
 class OrderQuerySet(models.QuerySet):
-    def get_totals(self, pk=None):
+    def get_totals(self, order=None):
         return (
-            self.order_items.annotate(
+            order.order_items.annotate(
                 total_price=models.F('order_items__quantity') * models.F('order_items__price'),
                 quantity_shipped=models.F('order_items__shipment_items__quantity'),
             ).aggregate(
