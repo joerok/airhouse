@@ -53,12 +53,12 @@ class Order(models.Model):
     @property
     def total_order_price(self):
         """ * total order price (sum of item price) """
-        return self.get_totals()['total_price']
+        return self.objects.get_totals()['total_price']
 
     @property
     def quantity_ordered(self):
         """ * total number of items ordered (sum of item quantity) """
-        return self.get_totals()['total_quantity']
+        return self.objects.get_totals()['total_quantity']
     
     @property
     def number_of_shipments(self):
@@ -67,12 +67,12 @@ class Order(models.Model):
 
     @property
     def unshipped_items_count(self):
-        return self.get_totals()['quantity_unshipped']
+        return self.objects.get_totals()['quantity_unshipped']
 
     @property
     def shipped_items_count(self):
         """ * total number of items shipped (sum of item quantity in shipments """
-        return self.get_totals()['quantity_shipped']
+        return self.objects.get_totals()['quantity_shipped']
 
     class Meta:
         ordering = ['ordered_at']
