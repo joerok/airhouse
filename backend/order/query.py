@@ -4,7 +4,7 @@ class OrderQueryManager(models.Manager):
     def get_queryset(self):
         return OrderQuerySet(model=self.model, using=self._db, hints=self._hints)
     
-    def get_totals(self, order=order):
+    def get_totals(self, order=None):
         return self.get_queryset().get_totals(order=order)
 
     def expensive(self, min_price=100):
