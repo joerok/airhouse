@@ -94,9 +94,6 @@ class OrderItem(models.Model):
     }
     SYMBOL_CURRENCIES = dict((s,c) for c,s in CURRENCY_SYMBOLS.items())
 
-    objects = OrderItemQuerySet.as_manager()
-
-
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     sku = models.CharField(max_length=255)
