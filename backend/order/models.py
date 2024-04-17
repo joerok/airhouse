@@ -47,7 +47,6 @@ class Order(models.Model):
                 'quantity_shipped': item_totals['quantity_shipped'],
                 'quantity_unshipped': item_totals['total_quantity'] - item_totals['quantity_shipped']
             }
-
         return self._cached_totals
 
     @property
