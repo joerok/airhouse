@@ -22,11 +22,11 @@ class OrderQuerySet(models.QuerySet):
         return (
             order.order_items.annotate(
                 total_line_price=models.F('quantity') * models.F('price'),
-                quantity_shipped=models.F('shipment_items__quantity'),
+                line_quantity_shipped=models.F('shipment_items__quantity'),
             ).aggregate(
                 total_quantity=models.Sum('quantity'),
                 total_price=models.Sum('total_line_price'),
-                quantity_shipped=models.Sum('quantity_shipped'),
+                quantity_shipped=models.Sum('line_quantity_shipped'),
             )
         )
 
