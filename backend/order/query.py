@@ -31,3 +31,21 @@ class OrderQuerySet(models.QuerySet):
                 quantity_shipped=Coalesce(models.Sum('line_quantity_shipped'), 0),
             )
         )
+
+class OrderItemQueryManager(models.Manager):
+    def get_queryset(self):
+        return OrderItemQuerySet(model=self.model, using=self._db, hints=self._hints)
+
+
+class OrderItemQuerySet(models.QuerySet):
+    def with_totals(self):
+        return (
+            self.annotate(
+                total_line_price=models.F('quantity') * models.F('price'),
+                line_quantity_shipped=models.F('shipment_items__quantity'),
+            ).aggregate(
+                total_quantity=Coalesce(models.Sum('quantity'), 0),
+                total_price=Coalesce(models.Sum('total_line_price'), Decimal(0)),
+                quantity_shipped=Coalesce(models.Sum('line_quantity_shipped'), 0),
+            )
+        )
