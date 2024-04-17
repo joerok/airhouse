@@ -44,7 +44,7 @@ class Order(models.Model):
             self._cached_totals = {
                 'total_price': item_totals['total_price'],
                 'total_quantity': item_totals['total_quantity'],
-                'quantity_shipped': item_totals['quanity_shipped'],
+                'quantity_shipped': item_totals['quantity_shipped'],
                 'quantity_unshipped': item_totals['total_quantity'] - item_totals['quantity_shipped']
             }
 
