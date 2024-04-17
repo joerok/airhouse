@@ -24,8 +24,8 @@ class OrderQuerySet(models.QuerySet):
                 total_line_price=models.F('quantity') * models.F('price'),
                 line_quantity_shipped=models.F('shipment_items__quantity'),
             ).aggregate(
-                total_quantity=models.Sum('quantity'),
-                total_price=models.Sum('total_line_price'),
-                quantity_shipped=models.Sum('line_quantity_shipped'),
+                total_quantity=models.Coalesce(models.Sum('quantity'), 0),
+                total_price=models.Coalesce(models.Sum('total_line_price'), 0),
+                quantity_shipped=models.Coalesce(models.Sum('line_quantity_shipped'), 0),
             )
         )
