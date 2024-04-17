@@ -63,6 +63,7 @@ class Order(models.Model):
     @property
     def number_of_shipments(self):
         """ * total number of shipments (count of shipments) """
+        raise Exception(dir(self))
         return len(self.shipments)
 
     @property

@@ -11,8 +11,6 @@ def update_order_status_from_shipment_items(sender, instance, created, **kwargs)
     if created:
         order = instance.order_item.order
         if order.status in (Order.STATUS_OPEN, Order.STATUS_PARTIAL):
-            order.reset_shipped_item_counts()
-
             if order.unshipped_items_count == 0:
                 order.status = Order.STATUS_CLOSED
             elif order.shipped_items_count > 0:
