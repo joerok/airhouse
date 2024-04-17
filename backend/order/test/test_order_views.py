@@ -12,6 +12,7 @@ class OrderViewSetTestCase(APITestCase):
 
     def test_order_create_fake_order(self):
         response = self.client.get('/api/orders/?fake_order')
+        raise Exception(response.data)
         self.assertEqual(response.status_code, 201)
 
     def test_order_total_price(self):
