@@ -17,7 +17,7 @@ class OrderViewSetTestCase(APITestCase):
     def test_order_total_price(self):
         fake_order = OrderFactory()
         serializer = OrderSerializer(instance=fake_order)
-        self.assertTrue(float(serializer.data['total_order_price']) > 0, serializer)
+        self.assertTrue(float(serializer.data['total_order_price']) > 0, serializer.data)
 
     def test_order_quantity_ordered(self):
         fake_order = OrderFactory()
