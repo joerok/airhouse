@@ -29,11 +29,3 @@ class OrderQuerySet(models.QuerySet):
                 quantity_shipped=models.Sum('line_quantity_shipped'),
             )
         )
-
-
-class OrderItemQuerySet(models.QuerySet):
-    def with_total_price(self):
-        return self.annotate(total_price=models.Sum(models.F('price') * models.F('quantity')))
-
-    def with_quantity_ordered(self):
-        return self.annotate(quantity_ordered=models.Sum(models.F('quantity')))
