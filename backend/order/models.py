@@ -42,7 +42,7 @@ class Order(models.Model):
             # Calculate totals if not cached
             item_totals = Order.objects.get_totals(order=self)
             self._cached_totals = {
-                'total_price': item_totals['item_price'],
+                'total_price': item_totals['total_price'],
                 'total_quantity': item_totals['total_quantity'],
                 'quantity_shipped': item_totals['quanity_shipped'],
                 'quantity_unshipped': item_totals['total_quantity'] - item_totals['quantity_shipped']
