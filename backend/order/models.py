@@ -33,54 +33,46 @@ class Order(models.Model):
     status = models.CharField(max_length=255, choices=STATUS_CHOICES, default=STATUS_OPEN)
     ordered_at = models.DateTimeField()
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._cached_totals = None
+
+    def get_totals__(self):
+        if self._cached_totals is None:
+            # Calculate totals if not cached
+
+            self._cached_totals = {
+                'total_price': item_totals['item_price'],
+                'total_quantity': item_totals['total_quantity'],
+                'quantity_shipped': item_totals['quanity_shipped'],
+                'quantity_unshipped': item_totals['total_quantity'] - item_totals['quantity_shipped']
+            }
+
+        return self._cached_totals
+
     @property
     def total_order_price(self):
         """ * total order price (sum of item price) """
-        try:
-            self.order_items.with_total_price().first().total_price
-        except:
-            raise Exception(e)
+        return self.get_totals()['total_price']
 
     @property
     def quantity_ordered(self):
         """ * total number of items ordered (sum of item quantity) """
-        return self.total_order_price()
-
+        return self.get_totals()['total_quantity']
+    
     @property
     def number_of_shipments(self):
         """ * total number of shipments (count of shipments) """
-        return len(self.shipments.all())
-
-    __shipped_item_counts = None
-    def update_shipped_item_counts(self):
-        if not self.__shipped_item_counts:
-            annotation = self.order_items.annotate(
-                items_shipped=models.Sum('shipment_items__quantity')
-            ).aggregate(
-                total_items_ordered=models.Sum('quantity'),
-                total_items_shipped=models.Sum('items_shipped')
-            )
-            items_with_shipments = (annotation.get('total_items_shipped') or 0)
-            items_without_shipments = (annotation.get('total_items_ordered') or 0) - items_with_shipments
-
-            self.__shipped_item_counts = dict(
-                shipped=items_with_shipments,
-                unshipped=items_without_shipments,
-            )
-
-    def reset_shipped_item_counts(self):
-        self.__shipped_item_counts = None
+        return len(self.shipments)
 
     @property
     def unshipped_items_count(self):
-        self.update_shipped_item_counts()
-        return self.__shipped_item_counts['unshipped']
+        return self.get_totals()['quantity_unshipped']
 
     @property
     def shipped_items_count(self):
         """ * total number of items shipped (sum of item quantity in shipments """
-        self.update_shipped_item_counts()
-        return self.__shipped_item_counts['shipped']
+        return self.get_totals()['quantity_shipped']
 
     class Meta:
         ordering = ['ordered_at']
