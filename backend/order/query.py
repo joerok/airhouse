@@ -7,10 +7,10 @@ class OrderQueryManager(models.Manager):
         return OrderQuerySet(model=self.model, using=self._db, hints=self._hints)
     
     def get_totals(self, order=None):
-        return self.get_queryset().get_totals(order=order)
+        return self.get_queryset().with_totals()
 
     def expensive(self, min_price=100):
-        return self.filter(total_price__gt=min_price)
+        return self.get_queryset().with_totals().filter(total_price__gt=min_price)
 
     def split_ship(self):
         return self.filter(shipments__gt=1)
@@ -20,31 +20,13 @@ class OrderQueryManager(models.Manager):
 
 
 class OrderQuerySet(models.QuerySet):
-    def get_totals(self, order=None):
-        return (
-            order.order_items.annotate(
-                total_line_price=models.F('quantity') * models.F('price'),
-                line_quantity_shipped=models.F('shipment_items__quantity'),
-            ).aggregate(
-                total_quantity=Coalesce(models.Sum('quantity'), 0),
-                total_price=Coalesce(models.Sum('total_line_price'), Decimal(0)),
-                quantity_shipped=Coalesce(models.Sum('line_quantity_shipped'), 0),
-            )
-        )
-
-class OrderItemQueryManager(models.Manager):
-    def get_queryset(self):
-        return OrderItemQuerySet(model=self.model, using=self._db, hints=self._hints)
-
-
-class OrderItemQuerySet(models.QuerySet):
     def with_totals(self):
         return (
             self.annotate(
-                total_line_price=models.F('quantity') * models.F('price'),
-                line_quantity_shipped=models.F('shipment_items__quantity'),
+                total_line_price=models.F('order_items__quantity') * models.F('order_items__price'),
+                line_quantity_shipped=models.F('order_items__shipment_items__quantity'),
             ).aggregate(
-                total_quantity=Coalesce(models.Sum('quantity'), 0),
+                total_quantity=Coalesce(models.Sum('order_items__quantity'), 0),
                 total_price=Coalesce(models.Sum('total_line_price'), Decimal(0)),
                 quantity_shipped=Coalesce(models.Sum('line_quantity_shipped'), 0),
             )

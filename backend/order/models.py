@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from django.db import models
 
-from order.query import OrderQueryManager, OrderItemQueryManager
+from order.query import OrderQueryManager
 
 
 class Address(models.Model):
@@ -93,8 +93,6 @@ class OrderItem(models.Model):
         CURRENCY_EUR: '€',
     }
     SYMBOL_CURRENCIES = dict((s,c) for c,s in CURRENCY_SYMBOLS.items())
-
-    objects = OrderItemQueryManager()
 
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
