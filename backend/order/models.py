@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from django.db import models
 
-from order.query import OrderQuerySet, OrderItemQuerySet
+from order.query import OrderQuerySet
 
 
 class Address(models.Model):
