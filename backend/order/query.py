@@ -21,11 +21,11 @@ class OrderQuerySet(models.QuerySet):
     def get_totals(self, order=None):
         return (
             order.order_items.annotate(
-                total_price=models.F('quantity') * models.F('price'),
+                total_line_price=models.F('quantity') * models.F('price'),
                 quantity_shipped=models.F('shipment_items__quantity'),
             ).aggregate(
                 total_quantity=models.Sum('quantity'),
-                total_price=models.Sum('total_price'),
+                total_price=models.Sum('total_line_price'),
                 quantity_shipped=models.Sum('quantity_shipped'),
             )
         )
