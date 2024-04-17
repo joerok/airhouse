@@ -8,10 +8,9 @@ from order.serializers import OrderSerializer, OrderItemSerializer
 class OrderViewSetTestCase(APITestCase):
     def test_order_view_set_list(self):
         from django.conf import settings
-        from django.db import connection
-
+        from django.db import connection, reset_queries
         settings.DEBUG = True
-        connection.queries = []
+        reset_queries()
         response = self.client.get('/api/orders/')
         self.assertEqual(response.status_code, 200)
         raise Exception(connection.queries)
