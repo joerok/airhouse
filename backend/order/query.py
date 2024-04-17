@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.functions import Coalesce
+from decimal import Decimal
 
 class OrderQueryManager(models.Manager):
     def get_queryset(self):
@@ -26,7 +27,7 @@ class OrderQuerySet(models.QuerySet):
                 line_quantity_shipped=models.F('shipment_items__quantity'),
             ).aggregate(
                 total_quantity=Coalesce(models.Sum('quantity'), 0),
-                total_price=Coalesce(models.Sum('total_line_price'), float(0)),
+                total_price=Coalesce(models.Sum('total_line_price'), Decimal(0)),
                 quantity_shipped=Coalesce(models.Sum('line_quantity_shipped'), 0),
             )
         )
