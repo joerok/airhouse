@@ -64,7 +64,7 @@ class Order(models.Model):
     @property
     def number_of_shipments(self):
         """ * total number of shipments (count of shipments) """
-        return len(self.shipments)
+        return self.shipments.count()
 
     @property
     def unshipped_items_count(self):
