@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class OrderQueryManager(models.Manager):
     def get_queryset(self):
         return OrderQuerySet(model=self.model, using=self._db, hints=self._hints)
@@ -21,15 +20,14 @@ class OrderQueryManager(models.Manager):
 class OrderQuerySet(models.QuerySet):
     def get_totals(self, pk=None):
         return (
-            self.get(pk=pk).annotate(
-                    total_price=models.F('order_items__quantity') * models.F('order_items__price'),
-                    quantity_shipped=models.F('order_items__shipment_items__quantity'),
-                )
-                .aggregate(
-                    total_quantity=models.Sum('quantity'),
-                    total_price=models.Sum('total_price'),
-                    quantity_shipped=models.Sum('quantity_shipped'),
-                )
+            self.order_items.annotate(
+                total_price=models.F('order_items__quantity') * models.F('order_items__price'),
+                quantity_shipped=models.F('order_items__shipment_items__quantity'),
+            ).aggregate(
+                total_quantity=models.Sum('quantity'),
+                total_price=models.Sum('total_price'),
+                quantity_shipped=models.Sum('quantity_shipped'),
+            )
         )
 
 
